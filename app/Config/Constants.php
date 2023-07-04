@@ -92,3 +92,18 @@ define('EVENT_PRIORITY_NORMAL', 100);
  * @deprecated Use \CodeIgniter\Events\Events::PRIORITY_HIGH instead.
  */
 define('EVENT_PRIORITY_HIGH', 10);
+
+
+define('MYSQL_TIMESTAMP_FORMAT', 'Y-m-d H:i:s');
+define('MYSQL_DATE_FORMAT', 'Y-m-d');
+
+
+define('JWT_AUTH', false);
+define('ASSETS_PATH', str_replace('app' . DIRECTORY_SEPARATOR, '', APPPATH) . 'public'.DIRECTORY_SEPARATOR .'assets' . DIRECTORY_SEPARATOR);
+define('DOCS_PATH', str_replace('app' . DIRECTORY_SEPARATOR, '', APPPATH) . 'public'.DIRECTORY_SEPARATOR.'docs' . DIRECTORY_SEPARATOR);
+define ('IS_CORS_ACTIVE', false);
+define('SYNC_DATAUSER', false);
+define('VENDOR_PATH', str_replace('app' . DIRECTORY_SEPARATOR, '', APPPATH) . 'vendor' .DIRECTORY_SEPARATOR);
+define('CDN_PATH', 'https://cdn.kamscode.site/');
+define('ROOT', str_replace('app/config', '',__DIR__));
+define("CONTROLLER_PATH", APPPATH . "controllers" . DIRECTORY_SEPARATOR);

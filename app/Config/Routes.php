@@ -31,6 +31,14 @@ $routes->set404Override();
 // route since we don't have to scan directories.
 $routes->get('/', 'Home::index');
 
+if(file_exists(APPPATH . 'Routes/' . 'Web.php')){
+    require APPPATH . 'Routes/' . 'Web.php';
+}
+
+if(file_exists(APPPATH . 'Routes/' . 'Api.php')){
+    require APPPATH . 'Routes/' . 'Api.php';
+}
+
 /*
  * --------------------------------------------------------------------
  * Additional Routing
