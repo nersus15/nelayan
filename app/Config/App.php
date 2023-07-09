@@ -160,7 +160,7 @@ class App extends BaseConfig
      *
      * @deprecated use Config\Session::$cookieName  instead.
      */
-    public string $sessionCookieName = 'ci_session';
+    public string $sessionCookieName = 'session_nelayan';
 
     /**
      * --------------------------------------------------------------------------
