@@ -22,7 +22,8 @@ class BarangModel extends Model
         'satuan',
         'harga',
         'photo',
-        'pemilik'
+        'pemilik',
+        'deskripsi'
     ];
 
     // Dates
@@ -55,7 +56,7 @@ class BarangModel extends Model
         if(!empty($pemilik))
             $m->where('barang.pemilik', $pemilik);
 
-        $tmp = $m->findAll();
+        $tmp = $m->orderBy('barang.diupdate', 'DESC')->findAll();
         $data = [];
 
 

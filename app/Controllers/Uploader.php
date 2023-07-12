@@ -26,8 +26,6 @@ class Uploader extends BaseController
             $filepath = $img->store( ASSETS_PATH . 'img/barang/', $nama);
             new File($filepath);
         }
-
-
         return $this->response->setJSON(['message' => 'Berhasil upload gambar', 'new' => $nama]);
     }
 }

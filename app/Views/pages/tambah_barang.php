@@ -14,6 +14,7 @@ if (!isset($dataBarang)) {
 }
 if (!empty($postData))
     $dataBarang = array_merge($dataBarang, $postData);
+
 ?>
 <div class="card mt-4">
     <div class="card-header">
@@ -21,6 +22,8 @@ if (!empty($postData))
         <p class="card-subtitle"><?= $desc ?></p>
     </div>
     <form enctype="multipart/form-data" action="<?= base_url('barang/tambah') ?>" method="post">
+        <input type="hidden" name="id" value="<?= $dataBarang['id'] ?? null ?>">
+        <input type="hidden" name="mode" value="<?= $mode ?>">
         <div class="card-body">
             <div class="row">
                 <div class="form-group col-sm-12 col-md-6">
@@ -46,7 +49,7 @@ if (!empty($postData))
                 </div>
                 <div class="form-group col-sm-12">
                     <label for="">Deskripsi</label>
-                    <textarea class="form-control" name="desc" maxlength="100" id="desc" cols="30" rows="5"><?= $dataBarang['desc'] ?></textarea>
+                    <textarea class="form-control" name="desc" maxlength="100" id="desc" cols="30" rows="5"><?= c_isset($dataBarang, 'desc') ? $dataBarang['desc'] : (c_isset($dataBarang, 'deskripsi') ? $dataBarang['deskripsi'] : null) ?></textarea>
                 </div>
                 <div class="form-group  col-sm-12">
                     <label for="">Gambar</label>
@@ -60,13 +63,13 @@ if (!empty($postData))
                             headers: {
                                 'jenis-gambar': 'barang'
                             },
-                            success: function(file, res){
+                            success: function(file, res) {
                                 $(file.previewElement).find('.dz-success-mark').css('opacity', 1);
                                 $("#photo").val(res.new);
                                 $('.dropzone').unbind('click');
                                 $('.dropzone').unbind('drag');
                             },
-                            error: function(file, res){
+                            error: function(file, res) {
                                 $(file.previewElement).find('.dz-error-message').css('opacity', 1).text(res.message).show();
                                 $(file.previewElement).find('.dz-error-mark').css('opacity', 1);
                             }
@@ -74,7 +77,7 @@ if (!empty($postData))
                     </script>
                     <div class="dropzone" id="gambar-barang" action="<?= base_url('upload/gambar') ?>">
                         <!-- <input accept=".jpg, .jpeg, .png" class="file-styled " type="file" id="photo" name="photo"> -->
-                        
+
                     </div>
                 </div>
             </div>
@@ -87,3 +90,30 @@ if (!empty($postData))
         </div>
     </form>
 </div>
+
+<script>
+    $(document).ready(function() {
+        Inputmask.extendAliases({
+            'numeric': {
+                "prefix": "Rp. ",
+                "digits": 0,
+                "digitsOptional": false,
+                "decimalProtect": true,
+                "groupSeparator": ".",
+                "radixPoint": ",",
+                "radixFocus": true,
+                "autoGroup": true,
+                "autoUnmask": true,
+                "removeMaskOnSubmit": true
+            }
+        });
+
+        Inputmask.extendAliases({
+            'IDR': {
+                alias: "numeric", //it inherits all the properties of numeric    
+                // "prefix": "Rpoverrided" //overrided the prefix property   
+            }
+        });
+        $("#harga").inputmask('IDR')
+    });
+</script>

@@ -4,6 +4,9 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\BarangModel;
+use Exception;
+
+use function PHPUnit\Framework\throwException;
 
 class Barang extends BaseController
 {
@@ -17,6 +20,8 @@ class Barang extends BaseController
     }
     function list(){
         $dataBarang = $this->barangModel->getWithTerjual(sessiondata('login', 'username'));
+        $session = session();
+        $response = $session->getFlashdata('response');
         $data = [
             'title' => 'Daftar Barang ' . sessiondata('login', 'username'),
             'activeMenu' => 'barang',
@@ -38,6 +43,7 @@ class Barang extends BaseController
             ],
             'dataFooter' => [
                 'extra_js' => [
+                    'js/pages/barang.js'
                 ]
             ],
             'contents' => [
@@ -45,7 +51,7 @@ class Barang extends BaseController
                     'view' => 'components/datatables',
                     'data' => [
                         'data' => $dataBarang,
-                        'desc' => 'Data Baran Hari Ini <a href="'. base_url('barang/tambah') .'" class="btn btn-primary">Tambah<a/>',
+                        'desc' => !empty($response) ? $response : 'Data Baran Hari Ini <a href="'. base_url('barang/tambah') .'" class="btn btn-primary">Tambah<a/>',
                         'header' => [
                             'No' => function($rec, $index, $row){return $row;},
                             'Gambar' => function($rec){
@@ -53,7 +59,7 @@ class Barang extends BaseController
                                 return '<img width="100px" src="'. assets_url('img/barang/' . $photo) .'" class="img-fluid rounded thumbnail-image">';
                             },
                             'Nama' => 'nama',
-                            'Deskripsi' => 'desc',
+                            'Deskripsi' => 'deskripsi',
                             'Harga' => function($rec){return rupiah_format($rec->harga);},
                             'Terjual/Stok' => function($rec){
                                 $terjual = $rec->terjual;
@@ -64,7 +70,7 @@ class Barang extends BaseController
                             'Actions' => function($rec){
                                 $buttons = '<div class="row" style="text-align:center">
                                     <div clas="col-sm-12 col-md-6 mt-2"><a class="btn btn-warning update-barang" href="barang/update/'.$rec->id.'">' . 'Update' . '</a></div>
-                                    <div clas="col-sm-12 col-md-6 mt-2"><a class="btn btn-danger update-barang" href="barang/delete/'.$rec->id.'">' . 'Delete' . '</a></div>
+                                    <div clas="col-sm-12 col-md-6 mt-2"><a class="btn btn-danger delete-barang" href="barang/delete/'.$rec->id.'">' . 'Delete' . '</a></div>
                                     </div>';
                                 return $buttons;
                             }
@@ -84,7 +90,9 @@ class Barang extends BaseController
             'activeMenu' => 'barang',
             'dataHeader' => [
                 'extra_js' => [
-                    'vendor/dropzone/dropzone.js'
+                    'vendor/dropzone/dropzone.js',
+                    'vendor/inputmask/inputmask.js',
+                    'vendor/inputmask/jquery.inputmask.js',
                 ],
                 'extra_css' => [
                     'vendor/dropzone/basic.css',
@@ -109,8 +117,48 @@ class Barang extends BaseController
 
         return view('templates/sbadmin', $data);
     }
+    function update($id){
+        $session = session();
+        $response = $session->getFlashdata('response');
+        $dataBarang = $this->barangModel->find($id);
+        $data = [
+            'title' => 'Daftar Barang ' . sessiondata('login', 'username'),
+            'activeMenu' => 'barang',
+            'dataHeader' => [
+                'extra_js' => [
+                    'vendor/dropzone/dropzone.js',
+                    'vendor/inputmask/inputmask.js',
+                    'vendor/inputmask/jquery.inputmask.js',
+                ],
+                'extra_css' => [
+                    'vendor/dropzone/basic.css',
+                    'vendor/dropzone/dropzone.css'
+                ]
+            ],
+            'dataFooter' => [
+                'extra_js' => [
+                ]
+            ],
+            'contents' => [
+                'barang' => [
+                    'view' => 'pages/tambah_barang',
+                    'data' => [
+                        'mode' => 'edit',
+                        'desc' => $response,
+                        'dataBarang' => $dataBarang
+                    ]
+                ]
+            ]
+        ];
+
+        return view('templates/sbadmin', $data);
+    }
     function post_tambah(){
         $post = $_POST;
+        $mode = $post['mode'];
+        if(!in_array($mode,['baru', 'edit']))
+            throwException(New Exception("mode tidak valid", 403));
+
         $data = [
             'id' => random(8),
             'nama' => $post['nama'],
@@ -123,12 +171,26 @@ class Barang extends BaseController
             'photo' => $post['photo'],
             'pemilik' => sessiondata('login', 'username')
         ];
+        if($mode == 'edit'){
+            unset($data['id'], $data['dibuat']);
+        }
 
         try {
-            $this->barangModel->insert($data);
-            return redirect()->to(base_url('barang/tambah'))->with('response', 'Berhasil tambah barang');
+            if($mode == 'baru')
+                $this->barangModel->insert($data);
+            elseif($mode == 'edit')
+                $this->barangModel->update($post['id'], $data);
+            return redirect()->to(base_url(($mode == 'baru' ? 'barang/tambah' : 'barang/update/' . $post['id'])))->with('response', 'Berhasil '. ($mode == 'baru' ? 'tambah' : 'Update') .' barang' . ($mode == 'edit' ? $post['id'] : null));
         } catch (\Throwable $th) {
             return redirect()->to(base_url('barang/tambah'))->with('response', $th->getMessage())->with('postData', $post);
         }
+    }
+    function delete($id){
+        $barang = $this->barangModel->where('pemilik', sessiondata('login', 'username'))->where('id', $id)->find();
+        if(empty($barang))
+            return redirect()->to(base_url('barang'))->with('response', 'Barang tidak ditemukan');
+        
+        $this->barangModel->delete($id);
+        return redirect()->to(base_url('barang'))->with('response', 'Berhasil menghapus barang');
     }
 }

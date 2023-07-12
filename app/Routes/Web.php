@@ -16,4 +16,6 @@ $routes->get('logout', 'User::logout', ['filter' => 'HarusLogin']);
 $routes->get('dashboard', 'Home::dashboard', ['filter' => 'HarusLogin']);
 $routes->get('barang', 'Barang::list', ['filter' => 'HarusLogin']);
 $routes->get('barang/tambah', 'Barang::tambah', ['filter' => 'HarusLogin']);
+$routes->get('barang/update/(:any)', 'Barang::update/$1', ['filter' => 'HarusLogin']);
+$routes->get('barang/delete/(:any)', 'Barang::delete/$1', ['filter' => 'HarusLogin']);
 $routes->post('barang/tambah', 'Barang::post_tambah', ['filter' => 'HarusLogin']);
