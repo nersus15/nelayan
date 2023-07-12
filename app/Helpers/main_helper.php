@@ -846,3 +846,21 @@ if(!function_exists('reversemapping')){
         return $field;
     }
 }
+if ( ! function_exists('prefiks_wilayah'))
+{
+	function prefiks_wilayah($wilayah)
+	{
+		if (empty($wilayah) || strlen($wilayah) != 13) return null;
+		return $wilayah == '00.00.00.0000' ? '' : str_replace(array('.0000', '.00'), array('', ''), $wilayah);
+	}
+}
+if ( ! function_exists('level_wilayah'))
+{
+	function level_wilayah($wilayah)
+	{
+		$ln = strlen($wilayah);
+		if ($ln == 13)
+			$ln = strlen(prefiks_wilayah($wilayah));
+		return intval(($ln + 1) / 3);
+	}
+}

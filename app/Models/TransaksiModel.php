@@ -7,13 +7,27 @@ use CodeIgniter\Model;
 class TransaksiModel extends Model
 {
     protected $DBGroup          = 'default';
-    protected $table            = 'transaksis';
+    protected $table            = 'transaksi';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = [];
+    protected $allowedFields    = [
+        'id',
+        'ongkir',
+        'dibuat',
+        'diupdate',
+        'barang',
+        'jumlah',
+        'pembeli',
+        'alamat_pembeli',
+        'detail_alamat_pembeli',
+        'hp',
+        'status',
+        'token',
+        'jenis'
+    ];
 
     // Dates
     protected $useTimestamps = false;

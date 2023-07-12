@@ -31,7 +31,9 @@ $(document).ready(function () {
         var newVal = null;
         var harga = input.data('harga');
         var nama = input.data('nama');
-        
+        var alamat = input.data('alamat');
+        var username = input.data('username');
+        var namaLenkap = input.data('namalengkap');
         if (!oldVal) oldVal = 0;
 
         if (data)
@@ -39,10 +41,10 @@ $(document).ready(function () {
         else
             data = [];
         if (operasi == 'tambah') {
-            if (oldVal < max)
+            if (parseInt(oldVal) < parseInt(max))
                 input.val(parseInt(oldVal) + 1);
             else {
-                alert("Hanya bisa membeli maksimal sebanyak 3 ");
+                alert("Hanya bisa membeli maksimal sebanyak  " + max);
                 return;
             }
 
@@ -61,9 +63,13 @@ $(document).ready(function () {
             id: id,
             nama: nama,
             jumlah: newVal,
+            pemilik: username,
+            nama_pemilik: namaLenkap,
             harga: harga,
+            alamat: alamat,
             total: (harga * newVal).toString().rupiahFormat()
         }
+        console.log(newData);
         if (data.length == 0) {
             data.push(newData);
         } else {

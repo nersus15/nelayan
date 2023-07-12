@@ -48,6 +48,10 @@ class Transaksi extends Migration
                 'type' => 'VARCHAR',
                 'constraint' => 16
             ],
+            'token' => [
+                'type' => 'VARCHAR',
+                'constraint' => 15
+            ],
             'status' => [
                 'type' => 'ENUM',
                 'constraint' => ['proses', 'siap', 'selesai', 'batal'],

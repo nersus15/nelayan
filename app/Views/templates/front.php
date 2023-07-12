@@ -109,7 +109,19 @@
             <h3>Hasil Nelayan Hari Ini</h3>
             <hr>
             <div class="row">
-                <?php foreach ($barang as $b) : $b = (array) $b; ?>
+                <?php foreach ($barang as $b) :?>
+                <?php 
+                 $b = (array) $b;
+                 $textAlamat = '';
+
+                 if(!empty($b['detail_alamat'])){
+                    $textAlamat .= $b['detail_alamat'] . ', ';
+                 }
+                 $desa = empty($b['desa']) ? '' : ('Desa ' . $b['desa'] . ', ');
+                 $kecamatan = empty($b['kecamatan']) ? '' : ('Kecamatan ' . $b['kecamatan']);
+
+                 $textAlamat .= $desa . $kecamatan;
+                ?>
                     <div class="col-sm-6 col-md-3 mt-2 mb-2">
                         <div class="card">
                             <div class="image-container">
@@ -130,10 +142,13 @@
                                         <span class="new-price"><?= rupiah_format($b['harga']) ?></span>
                                         <small class="old-price text-right">/ <?= $b['satuan'] ?></small>
                                     </div>
-
                                 </div>
                                 <div class="d-flex justify-content-between align-items-center pt-1">
                                     <p><?= $b['deskripsi'] ?></p>  
+                                </div>
+                                <div class="col-sm-12 m-0">
+                                    <p style="color: grey;"><?= $textAlamat ?></p>  
+
                                 </div>
                                 <div class="d-flex justify-content-between align-items-center pt-1">
                                     <div>
@@ -142,7 +157,7 @@
                                     </div>
                                     <div class="buy">
                                         <span data-id="<?= $b['id'] ?>" class="btn-custom btn-tambah-belanja"><i class="fas fa-plus"></i></span>
-                                        <input type="number" data-harga="<?= $b['harga'] ?>" class="jml-belanja" min="0" max="<?= $b['stok'] - $b['terjual'] ?>" name="jml-belanja" id="<?= $b['id'] ?>" >
+                                        <input data-username="<?= $b['pemilik'] ?>" data-nama="<?= $b['nama'] ?>" data-namalengkap="<?= $b['nama_lengkap'] ?>" data-alamat="<?= $textAlamat ?>" type="number" data-harga="<?= $b['harga'] ?>" class="jml-belanja" min="0" max="<?= $b['stok'] - $b['terjual'] ?>" name="jml-belanja" id="<?= $b['id'] ?>" >
                                         <span data-id="<?= $b['id'] ?>"  class="btn-custom btn-kurangi-belanja"><i class="fas fa-minus"></i></span>
                                     </div>
                                 </div>

@@ -23,9 +23,9 @@ class Barang extends BaseController
         $session = session();
         $response = $session->getFlashdata('response');
         $data = [
-            'title' => 'Daftar Barang ' . sessiondata('login', 'username'),
             'activeMenu' => 'barang',
             'dataHeader' => [
+                'title' => 'Daftar Barang ' . sessiondata('login', 'username'),
                 'extra_js' => [
                     "vendor/datatables/jquery.dataTables.min.js",
                     "vendor/datatables-bs4/js/dataTables.bootstrap4.min.js",
@@ -86,9 +86,9 @@ class Barang extends BaseController
         $session = session();
         $response = $session->getFlashdata('response');
         $data = [
-            'title' => 'Daftar Barang ' . sessiondata('login', 'username'),
-            'activeMenu' => 'barang',
+             'activeMenu' => 'barang',
             'dataHeader' => [
+                'title' => 'Tambah Barang',
                 'extra_js' => [
                     'vendor/dropzone/dropzone.js',
                     'vendor/inputmask/inputmask.js',
@@ -122,9 +122,9 @@ class Barang extends BaseController
         $response = $session->getFlashdata('response');
         $dataBarang = $this->barangModel->find($id);
         $data = [
-            'title' => 'Daftar Barang ' . sessiondata('login', 'username'),
-            'activeMenu' => 'barang',
+           'activeMenu' => 'barang',
             'dataHeader' => [
+                'title' => 'Update Barang',
                 'extra_js' => [
                     'vendor/dropzone/dropzone.js',
                     'vendor/inputmask/inputmask.js',

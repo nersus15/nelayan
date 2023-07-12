@@ -51,8 +51,10 @@ class BarangModel extends Model
     protected $afterDelete    = [];
 
     function getWithTerjual($pemilik = null){
-        $m = $this->join('transaksi', 'transaksi.barang = barang.id AND transaksi.status IN("siap", "selesai") AND transaksi.dibuat LIKE "' . waktu(null, MYSQL_DATE_FORMAT) . '%"', 'left')->select('barang.*, transaksi.barang');
-       
+        $m = $this->join('users', 'users.username = barang.pemilik')
+            ->join('transaksi', 'transaksi.barang = barang.id AND transaksi.status IN("siap", "selesai") AND transaksi.dibuat LIKE "' . waktu(null, MYSQL_DATE_FORMAT) . '%"', 'left')->select('barang.*,users.alamat, users.detail_alamat, users.nama_lengkap, transaksi.barang');
+        $db = \Config\Database::connect();
+        $wilayah = $db->table('wilayah')->get()->getResult();
         if(!empty($pemilik))
             $m->where('barang.pemilik', $pemilik);
 
@@ -69,6 +71,27 @@ class BarangModel extends Model
                 $t->terjual = (!empty($t->barang) ? 1 : 0);
                 unset($t->barang);
                 $data[$t->id] = $t;
+            }
+        }
+        $tmpWil = $wilayah;
+        $wilayah = [];
+        foreach($tmpWil as $w){
+            $wilayah[$w->id] = [
+                'nama' => $w->nama,
+                'level' => $w->level
+            ];
+        }
+        foreach($data as $k => $d){
+            $d = (array)$d;
+            $levelWil = level_wilayah($d['alamat']);
+            if($levelWil == 3){
+                $data[$k]->kecamatan = $wilayah[$d['alamat']]['nama'];
+                $data[$k]->desa = '';
+                $data[$k]->detail_alamat = $d['detail_alamat'];
+            }elseif($levelWil == 4){
+                $data[$k]->kecamatan = $wilayah[substr($d['alamat'], 0, 8) . '.0000']['nama'];
+                $data[$k]->desa = $wilayah[$d['alamat']]['nama'];
+                $data[$k]->detail_alamat = $d['detail_alamat'];
             }
         }
         return $data;

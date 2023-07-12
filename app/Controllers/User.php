@@ -103,4 +103,61 @@ class User extends BaseController
         $this->userModel->insert($data);
         return redirect()->to(base_url('login'))->with('response', 'Silahkan login dengan akun yang sudah dibuat')->with('loginData', ['user' => $post['username'], 'password' => $post['password']]);
     }
+
+    function keranjang(){
+        $db = \Config\Database::connect();
+        $dataWil = $db->table('wilayah')->get()->getResultArray();
+        $desa = [];
+        foreach ($dataWil as $key => $value) {
+            if ($value['level'] < 4) continue;
+
+            $kode = substr($value['id'], 0, 8);
+            if (isset($desa[$kode])) {
+                $desa[$kode][] = $value;
+            } else {
+                $desa[$kode] = [$value];
+            }
+        }
+        $data = [
+            'kec' => array_filter($dataWil, function ($arr) {
+                return $arr['level'] == 3;
+            }),
+            'desa' => $desa,
+            'user' => is_login() ? sessiondata() : []
+        ];
+        return view('pages/keranjang', $data);
+    }
+
+    function pesan(){
+        $post = $this->request->getPost();
+        if(!isset($post['barang']) || empty($post['barang']))
+            return redirect()->to(base_url());
+        
+        // Buat Transaksi
+        $data = [];
+        $token = random(15);
+        foreach($post['barang'] as $k => $barang){
+            $data[] = [
+                'id' => random(8),
+                'dibuat' => waktu(),
+                'diupdate' => waktu(),
+                'barang' => $barang,
+                'jumlah' => $post['jumlah'][$k],
+                'pembeli' => $post['nama'],
+                'alamat_pembeli' => $post['desa'],
+                'detail_alamat_pembeli' => $post['alamat'],
+                'hp' => $post['hp'],
+                'status' => 'proses',
+                'token' => $token
+            ];
+        }
+        try {
+            $transaksiModel = new \App\Models\TransaksiModel();
+            $transaksiModel->insertBatch($data);
+        } catch (\Throwable $th) {
+            return redirect()->to(base_url('keranjang'))->with('response', $th->getMessage());
+        }
+        return redirect()->to(base_url('keranjang'))->with('response', "Berhasil melakukan pemesanan")->with('token', $token);
+        return $this->response->setJSON($this->request->getPost());
+    }
 }
