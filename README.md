@@ -1,6 +1,6 @@
 # Sistem Kelompok Nelayan Menggunakan Codeigniter 4
 
-## Requirenment
+## Requirement
 1. PHP versi 8.24 ^
 
 ## Cara Install
