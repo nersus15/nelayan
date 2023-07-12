@@ -61,10 +61,17 @@
                     <a class="nav-link" href="<?= base_url() ?>">Home <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="<?= base_url('keranjang') ?>">Keranjang</a>
+                    <a id="nav-item-keranjang" class="nav-link" href="<?= base_url('keranjang') ?>">Keranjang </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="<?= base_url('track') ?>">Lacak Pesanan</a>
+                </li>
+                <li class="nav-item">
+                    <?php if(!is_login()): ?>
                     <a class="nav-link" href="<?= base_url('login') ?>">Login</a>
+                    <?php else: ?>
+                        <a class="nav-link" href="<?= base_url('dashboard') ?>">Dashboard</a>
+                    <?php endif ?>
                 </li>
             </ul>
         </div>
@@ -102,47 +109,47 @@
             <h3>Hasil Nelayan Hari Ini</h3>
             <hr>
             <div class="row">
-                <?php for ($i = 0; $i <= 50; $i++) : ?>
+                <?php foreach ($barang as $b) : $b = (array) $b; ?>
                     <div class="col-sm-6 col-md-3 mt-2 mb-2">
                         <div class="card">
                             <div class="image-container">
                                 <div class="first">
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <span class="discount">Tersedia</span>
+                                        <span class="discount"><?= $b['stok'] - $b['terjual'] > 0 ? 'Tersedia' : 'Habis' ?></span>
                                         <span class="wishlist">
-                                           Username
+                                           <?= $b['pemilik'] ?>
                                         </span>
                                     </div>
                                 </div>
-                                <img width="100%" src="<?= assets_url('img/barang/contoh.jpg') ?>" class="img-fluid rounded thumbnail-image">
+                                <img width="100%" src="<?=assets_url('img/barang/'. (  !empty($b['photo']) ? $b['photo'] : 'contoh.jpg')) ?>" class="img-fluid rounded thumbnail-image">
                             </div>
                             <div class="product-detail-container p-2">
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <h5 class="dress-name">White traditional long dress</h5>
+                                    <h5 class="dress-name"><?= $b['nama'] ?></h5>
                                     <div class="d-flex flex-column mb-2">
-                                        <span class="new-price"><?= rupiah_format(150000) ?></span>
-                                        <small class="old-price text-right">/Bak</small>
+                                        <span class="new-price"><?= rupiah_format($b['harga']) ?></span>
+                                        <small class="old-price text-right">/ <?= $b['satuan'] ?></small>
                                     </div>
 
                                 </div>
                                 <div class="d-flex justify-content-between align-items-center pt-1">
-                                    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Autem deleniti odit non dolor vel perferendis incidunt voluptas facilis magni molestias, nam itaque omnis aut debitis cumque nostrum culpa inventore consequuntur.</p>
+                                    <p><?= $b['deskripsi'] ?></p>  
                                 </div>
                                 <div class="d-flex justify-content-between align-items-center pt-1">
                                     <div>
                                         <i class="fa fa-star-o rating-star"></i>
-                                        <span class="rating-number">2/5</span>
+                                        <span class="rating-number"><?= $b['terjual'] .'/' . $b['stok'] ?></span>
                                     </div>
                                     <div class="buy">
-                                        <span data-id="<?= 'tes' . $i ?>" class="btn-custom btn-tambah-belanja"><i class="fas fa-plus"></i></span>
-                                        <input type="number" data-harga="4"  class="jml-belanja" min="0" max="3" name="jml-belanja" id="<?= 'tes' . $i ?>" >
-                                        <span data-id="<?= 'tes' . $i ?>"  class="btn-custom btn-kurangi-belanja"><i class="fas fa-minus"></i></span>
+                                        <span data-id="<?= $b['id'] ?>" class="btn-custom btn-tambah-belanja"><i class="fas fa-plus"></i></span>
+                                        <input type="number" data-harga="<?= $b['harga'] ?>" class="jml-belanja" min="0" max="<?= $b['stok'] - $b['terjual'] ?>" name="jml-belanja" id="<?= $b['id'] ?>" >
+                                        <span data-id="<?= $b['id'] ?>"  class="btn-custom btn-kurangi-belanja"><i class="fas fa-minus"></i></span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                <?php endfor ?>
+                <?php endforeach ?>
             </div>
         </div>
     </main>

@@ -226,7 +226,7 @@ if (!function_exists('random')) {
         for ($i = 0; $i < $length; $i++) {
             $randomString .= $characters[rand(0, $charactersLength - 1)];
         }
-        return $type == 'string' ? $randomString : boolval($randomString);
+        return $type == 'string' ? $randomString : intval($randomString);
     }
 }
 if (!function_exists('is_login')) {

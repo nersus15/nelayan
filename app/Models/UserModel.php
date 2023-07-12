@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use CodeIgniter\Model;
+use Faker\Generator;
 
 class UserModel extends Model
 {
@@ -48,4 +49,16 @@ class UserModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    function fake(Generator &$faker){
+        return [
+            'username' => $faker->userName,
+            'email'    => $faker->email,
+            'nama_lengkap' => $faker->firstName,
+            'hp' => $faker->phoneNumber,
+            'password' => password_hash('faker', PASSWORD_DEFAULT),
+            'alamat' => '52.03.20.0000',
+            'detail_alamat' => '',
+        ];
+    }
 }

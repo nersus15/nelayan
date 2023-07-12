@@ -2,7 +2,9 @@
 
 namespace App\Database\Seeds;
 
+use App\Models\UserModel;
 use CodeIgniter\Database\Seeder;
+use CodeIgniter\Test\Fabricator;
 
 class UserSeeder extends Seeder
 {
@@ -19,7 +21,9 @@ class UserSeeder extends Seeder
                 'detail_alamat' => ''
             ]
         ];
-
+        $faker = new Fabricator(UserModel::class);
+        $dataFake = $faker->make(30);
+        $data += $dataFake;
         // Using Query Builder
         $this->db->table('users')->insertBatch($data);
     }

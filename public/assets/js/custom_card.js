@@ -1,12 +1,12 @@
 $(document).ready(function () {
     $(".btn-tambah-belanja").click(function () {
         var id = $(this).data('id');
-        belanjaanHandler(nilai, id, harga, 'tambah');
+        belanjaanHandler(id, 'tambah');
     });
 
     $(".btn-kurangi-belanja").click(function () {
         var id = $(this).data('id');
-        belanjaanHandler(nilai, id,'kurang');
+        belanjaanHandler(id,'kurang');
     });
 
     function loadBelanjaan(){
@@ -19,6 +19,9 @@ $(document).ready(function () {
         data.forEach(barang => {
             $("#" + barang.id).val(barang.jumlah);
         });
+         // Hitung Barang Belanjaan
+         var barangBelanja = data.filter(arr => arr.jumlah > 0);
+         $("#nav-item-keranjang").html('Kernajang<span class="badge badge-danger">'+ barangBelanja.length +'</span>');
     }
     function belanjaanHandler(id, operasi = 'tambah') {
         var data = localStorage.getItem('belanjaan_nelayan');
@@ -79,6 +82,9 @@ $(document).ready(function () {
         }
         localStorage.setItem('belanjaan_nelayan', JSON.stringify(data));
 
+        // Hitung Barang Belanjaan
+        var barangBelanja = data.filter(arr => arr.jumlah > 0);
+        $("#nav-item-keranjang").html('Keranjang<span class="badge badge-danger">'+ barangBelanja.length +'</span>');
     }
 
     loadBelanjaan();
