@@ -86,7 +86,7 @@
                                 <a class="nav-link" href="<?= base_url('penjualan') ?>">Penjualan</a>
                             </nav>
                         </div>
-                        <a class="nav-link" href="tables.html">
+                        <a class="nav-link" href="<?= base_url('logout') ?>">
                             <div class="sb-nav-link-icon"><i class="fas fa-sign-out-alt"></i></div>
                             Logout
                         </a>
