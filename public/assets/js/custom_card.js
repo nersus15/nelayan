@@ -31,6 +31,7 @@ $(document).ready(function () {
         var newVal = null;
         var harga = input.data('harga');
         var nama = input.data('nama');
+        var hp = input.data('hp');
         var alamat = input.data('alamat');
         var username = input.data('username');
         var namaLenkap = input.data('namalengkap');
@@ -67,6 +68,7 @@ $(document).ready(function () {
             nama_pemilik: namaLenkap,
             harga: harga,
             alamat: alamat,
+            hp: hp,
             total: (harga * newVal).toString().rupiahFormat()
         }
         console.log(newData);

@@ -45,7 +45,7 @@ if (!empty($user)){
                                     <h3 class="text-center font-weight-light my-4">Keranjang</h3>
                                     <p id="token"></p>
                                 </div>
-                                <div class="card-body">
+                                <div style="overflow-x: scroll;" class="card-body">
                                     <form action="<?= base_url('pesan') ?>" method="post">
                                         <div class="form-floating mb-3">
                                             <input required value="<?= $data['nama'] ?>" class="form-control" name="nama" id="inputEmail" type="text" />
@@ -87,6 +87,7 @@ if (!empty($user)){
                                                         <th>Barang</th>
                                                         <th>Pemilik</th>
                                                         <th>Username</th>
+                                                        <th>No.Hp</th>
                                                         <th>Alamat</th>
                                                         <th>Harga</th>
                                                         <th>Jumlah</th>
@@ -166,6 +167,7 @@ if (!empty($user)){
                     row += '<td>' + pesanan.nama + '</td>';
                     row += '<td>' + pesanan.nama_pemilik + '</td>';
                     row += '<td>' + pesanan.pemilik + '</td>';
+                    row += '<td>' + pesanan.hp + '</td>';
                     row += '<td>' + pesanan.alamat + '</td>';
                     row += '<td>Rp. ' + pesanan.harga.toString().rupiahFormat() + '</td>';
                     row += '<td>' + pesanan.jumlah + '</td>';

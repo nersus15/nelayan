@@ -8,7 +8,8 @@ use App\Models\UserModel;
 class User extends BaseController
 {
     private $userModel;
-    function __construct() {
+    function __construct()
+    {
         $this->userModel = new UserModel();
     }
     public function index()
@@ -48,7 +49,7 @@ class User extends BaseController
     {
         $session = session();
         $session->remove('login');
-        return redirect('')->with('response', 'Anda baru saja logout');
+        return redirect()->to(base_url())->with('response', 'Anda baru saja logout');
     }
     function login_post()
     {
@@ -72,21 +73,22 @@ class User extends BaseController
             return redirect()->to(base_url('login'))->with('response', 'Password salah')->with('loginData', $post);;
         }
     }
-    function register_post(){
+    function register_post()
+    {
         $post = $this->request->getPost();
-        if($post['password'] != $post['repass'])
+        if ($post['password'] != $post['repass'])
             return redirect()->to(base_url('register'))->with('response', '"password" dan "ulangi password" tidak sama')->with('registerData', $post);
-        
+
         $userByUsername = $this->userModel->where('username', $post['username'])->find();
-        if(!empty($userByUsername))
+        if (!empty($userByUsername))
             return redirect()->to(base_url('register'))->with('response', 'Username sudah terdaftar')->with('registerData', $post);
 
         $userByHp = $this->userModel->where('hp', $post['hp'])->find();
-        if(!empty($userByHp))
+        if (!empty($userByHp))
             return redirect()->to(base_url('register'))->with('response', 'No Hp sudah terdaftar')->with('registerData', $post);
 
         $userByEmail = $this->userModel->where('email', $post['email'])->find();
-        if(!empty($userByEmail))
+        if (!empty($userByEmail))
             return redirect()->to(base_url('register'))->with('response', 'Email sudah terdaftar')->with('registerData', $post);
 
         $data = [
@@ -104,7 +106,8 @@ class User extends BaseController
         return redirect()->to(base_url('login'))->with('response', 'Silahkan login dengan akun yang sudah dibuat')->with('loginData', ['user' => $post['username'], 'password' => $post['password']]);
     }
 
-    function keranjang(){
+    function keranjang()
+    {
         $db = \Config\Database::connect();
         $dataWil = $db->table('wilayah')->get()->getResultArray();
         $desa = [];
@@ -128,15 +131,16 @@ class User extends BaseController
         return view('pages/keranjang', $data);
     }
 
-    function pesan(){
+    function pesan()
+    {
         $post = $this->request->getPost();
-        if(!isset($post['barang']) || empty($post['barang']))
+        if (!isset($post['barang']) || empty($post['barang']))
             return redirect()->to(base_url());
-        
+
         // Buat Transaksi
         $data = [];
         $token = random(15);
-        foreach($post['barang'] as $k => $barang){
+        foreach ($post['barang'] as $k => $barang) {
             $data[] = [
                 'id' => random(8),
                 'dibuat' => waktu(),
@@ -159,5 +163,232 @@ class User extends BaseController
         }
         return redirect()->to(base_url('keranjang'))->with('response', "Berhasil melakukan pemesanan")->with('token', $token);
         return $this->response->setJSON($this->request->getPost());
+    }
+    function penjualan()
+    {
+        $transaksiModel = new \App\Models\TransaksiModel();
+        $dataPenjualan = $transaksiModel->select('barang.nama, barang.harga, transaksi.*')
+            ->join('barang', 'barang.id = transaksi.barang')
+            ->where('barang.pemilik', sessiondata('login', 'username'))
+            ->orderBy('transaksi.dibuat', 'DESC')
+            ->findAll();
+
+        $db = \Config\Database::connect();
+        $dataWil = $db->table('wilayah')->get()->getResultArray();
+        $wilayah = [
+            'desa' => [],
+            'kecamatan' => []
+        ];
+        $session = session();
+        $respnse = $session->getFlashdata('response');
+        foreach ($dataWil as $w) {
+            if ($w['level'] == 3)
+                $wilayah['kecamatan'][$w['id']] = $w['nama'];
+            elseif ($w['level'] == 4)
+                $wilayah['desa'][$w['id']] = $w['nama'];
+        }
+        $data = [
+            'dataHeader' => [
+                'title' => 'Penjualan',
+                'extra_js' => [
+                    "vendor/datatables/jquery.dataTables.min.js",
+                    "vendor/datatables-bs4/js/dataTables.bootstrap4.min.js",
+                    "vendor/datatables-responsive/js/dataTables.responsive.min.js",
+                    "vendor/datatables-responsive/js/responsive.bootstrap4.min.js",
+                    "vendor/datatables-buttons/js/dataTables.buttons.min.js",
+                    "vendor/datatables-buttons/js/buttons.bootstrap4.min.js",
+                    "vendor/jszip/jszip.min.js",
+                    "vendor/pdfmake/pdfmake.min.js",
+                    "vendor/pdfmake/vfs_fonts.js",
+                    "vendor/datatables-buttons/js/buttons.html5.min.js",
+                    "vendor/datatables-buttons/js/buttons.print.min.js",
+                    "vendor/datatables-buttons/js/buttons.colVis.min.js",
+                ],
+            ],
+            'dataFooter' => [
+                'extra_js' => [
+                    'js/pages/penjualan.js'
+                ]
+            ],
+            'contents' => [
+                'dt-penjualan' => [
+                    'view' => 'components/datatables',
+                    'data' => [
+                        'desc' => $respnse,
+                        'header' => [
+                            'No' => function ($rec, $k, $i) {
+                                return $i;
+                            },
+                            'Barang' => 'nama',
+                            'Harga' => function ($rec) {
+                                return rupiah_format($rec['harga']);
+                            },
+                            'Jumlah' => 'jumlah',
+                            'Nama Pembeli' => 'pembeli',
+                            'No.Hp' => 'hp',
+                            'Alamat' => function ($rec) use ($wilayah) {
+                                $desa = '';
+                                $kecamatan = '';
+                                $alamat = $rec['alamat_pembeli'];
+                                if (level_wilayah($alamat) == 3)
+                                    $kecamatan == 'Kecamatan ' . $wilayah['kecamtan'][$alamat];
+                                else {
+                                    $desa = 'Desa ' . $wilayah['desa'][$alamat] . ', ';
+                                    $kecamatan = $wilayah['kecamatan'][substr($alamat, 0, 8) . '.0000'];
+                                }
+
+                                return $desa . $kecamatan;
+                            },
+                            'Detail Alamat' => 'detail_alamat_pembeli',
+                            'Status' => function ($rec) {
+                                $flag = 'bg-warning';
+                                $status = $rec['status'];
+                                if ($status == 'siap')
+                                    $flag = 'bg-info';
+                                elseif ($status == 'selesai')
+                                    $flag = 'bg-success';
+                                elseif ($status == 'batal')
+                                    $flag = 'bg-danger';
+
+                                $status = '<span class="badge ' . $flag . '">' . ucfirst($rec['status']) . '</span>';
+                                return $status;
+                            },
+                            'Actions' => function ($rec) {
+                                $btnTerima = '<a href="' . base_url('terima/' . $rec['id']) . '" data-id="' . $rec['id'] . '" class="btn btn-info col-sm-8">Terima</a>';
+                                $btnCancel = '<a href="' . base_url('tolak') . '" data-id="' . $rec['id'] . '" class="btn batalkan-pesanan btn-warning col-sm-8">Tolak</a>';
+                                $btnInfo = '<button data-id="'. $rec['id'] .'" class="info-pesanan btn-sm btn btn-info">Info Pembatalan</button>';
+                               
+                                return $rec['status'] == 'batal' ? $btnInfo : ($rec['status'] == 'proses' ? '<div class="row" style="justify-content: center;row-gap: 6px;">' . $btnTerima . $btnCancel . '</div>' : '');
+                            }
+                        ],
+                        'data' => $dataPenjualan
+                    ]
+                ],
+                'modal' => [
+                    'view' => 'pages/form_pembatalan',
+                    'data' => [
+                        'pembatal' => 'penjual'
+                    ]
+                ]
+            ]
+        ];
+
+        return view('templates/sbadmin', $data);
+    }
+
+    function terima($id)
+    {
+        $transaksiModel = new \App\Models\TransaksiModel();
+
+        $transaksi = $transaksiModel->find($id);
+        if (empty($transaksi)) {
+            return redirect()->to(base_url('penjualan'))->with('response', 'Tidak ada transaksi yang ditemukan');
+        }
+
+        $data = [
+            'diupdate' => waktu(),
+            'status' => 'siap'
+        ];
+        $transaksiModel->update($id, $data);
+        return redirect()->to(base_url('penjualan'))->with('response', 'Anda telah menerima pesanan, segera persiapkan pesanan');
+    }
+    function tolak()
+    {
+        $transaksiModel = new \App\Models\TransaksiModel();
+        $post = $this->request->getPost();
+        $transaksi = $transaksiModel->find($post['id']);
+        if (empty($transaksi)) {
+            return redirect()->to(base_url('penjualan'))->with('response', 'Tidak ada transaksi yang ditemukan');
+        }
+
+        $data = [
+            'diupdate' => waktu(),
+            'status' => 'batal',
+            'pembatal' => $post['pembatal'],
+            'alasan_batal' => $post['alasan']
+        ];
+        $transaksiModel->update($post['id'], $data);
+        return redirect()->to($post['pembatal'] == 'pembeli' ? base_url('tracking') : base_url('penjualan'))->with('response', 'Anda telah membatalkan pesanan');
+    }
+
+
+    function tracking()
+    {
+        return view('pages/tracking');
+    }
+    function track($token)
+    {
+        try {
+            $transaksiModel = new \App\Models\TransaksiModel();
+            $selects = [
+                'transaksi.id',
+                'users.username',
+                'users.nama_lengkap',
+                'users.alamat',
+                'users.detail_alamat',
+                'users.hp',
+                'barang.nama',
+                'barang.harga',
+                'transaksi.jumlah',
+                'transaksi.status',
+                'transaksi.pembeli',
+                'transaksi.alamat_pembeli',
+                'transaksi.detail_alamat_pembeli'
+            ];
+
+            $data = $transaksiModel->select(join(', ', $selects))
+                ->join('barang', 'barang.id = transaksi.barang')
+                ->join('users', 'users.username = barang.pemilik')
+                ->where('transaksi.token', $token)
+                ->findAll();
+            if(empty($data))
+                return $this->response->setStatusCode(500)->setJSON(['message' => 'Transaksi dengan token <b>' . $token . '</b> tidak ditemukan']);
+            $db = \Config\Database::connect();
+            $dataWil = $db->table('wilayah')->get()->getResultArray();
+            $wilayah = [
+                'desa' => [],
+                'kecamatan' => []
+            ];
+            foreach ($dataWil as $w) {
+                if ($w['level'] == 3)
+                    $wilayah['kecamatan'][$w['id']] = $w['nama'];
+                elseif ($w['level'] == 4)
+                    $wilayah['desa'][$w['id']] = $w['nama'];
+            }
+
+            foreach ($data as $k => $d) {
+                $textAlamtPenjual = '';
+                $textAlamtPembeli = '';
+
+                if (!empty($d['detail_alamat'])) {
+                    $textAlamtPenjual = $d['detail_alamat'] . ', ';
+                }
+                if (level_wilayah($d['alamat']) == 3) {
+                    $textAlamtPenjual .= ' Kec. ' . $wilayah['kecamatan'][$d['alamat']];
+                } else {
+                    $textAlamtPenjual .= ' Desa ' . $wilayah['desa'][$d['alamat']] . ', ' . $wilayah['kecamatan'][substr($d['alamat'], 0, 8) . '.0000'];
+                }
+
+                if (!empty($d['detail_alamat_pembeli'])) {
+                    $textAlamtPembeli = $d['detail_alamat_pembeli'] . ', ';
+                }
+                if (level_wilayah($d['alamat_pembeli']) == 3) {
+                    $textAlamtPembeli .= ' Kec. ' . $wilayah['kecamatan'][$d['alamat_pembeli']];
+                } else {
+                    $textAlamtPembeli .= ' Desa ' . $wilayah['desa'][$d['alamat_pembeli']] . ', ' . $wilayah['kecamatan'][substr($d['alamat_pembeli'], 0, 8) . '.0000'];
+                }
+
+                $data[$k]['alamat_penjual'] = $textAlamtPenjual;
+                $data[$k]['alamat_pembeli'] = $textAlamtPembeli;
+                return $this->response->setJSON($data);
+            }
+        } catch (\Throwable $th) {
+            return $this->response->setStatusCode(500)->setJSON(['message' => $th->getMessage()]);
+        }
+    }
+
+    function info($id){
+        $transaksiModel = new \App\Models\TransaksiModel();
+        return $this->response->setJSON($transaksiModel->find($id));
     }
 }

@@ -26,7 +26,9 @@ class TransaksiModel extends Model
         'hp',
         'status',
         'token',
-        'jenis'
+        'jenis',
+        'pembatal',
+        'alasan_batal'
     ];
 
     // Dates

@@ -11,7 +11,7 @@
     <link href="<?= assets_url('vendor/sbadmin/css/styles.css') ?>" rel="stylesheet" />
     <link href="<?= assets_url('css/main.css') ?>" rel="stylesheet" />
     <link  href="<?= assets_url('vendor/fontawesome/css/all.css') ?>" rel="stylesheet" />
-    <script src="<?= assets_url('vendor/bootstrap/js/jquery.min.js') ?>"></script>
+    <script src="<?= assets_url('vendor/jquery/jquery.min.js') ?>"></script>
     <script>var basepath = "<?= base_url() ?>"</script>
     <?php 
         if(!isset($dataHeader)) $dataHeader = [];
