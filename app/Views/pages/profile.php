@@ -58,6 +58,12 @@ foreach ($dataWil as $w) {
                                     </td>
                                 </tr>
                                 <tr>
+                                    <td>Nama Lengkap</td>
+                                    <td>
+                                        <input type="text" name="nama_lengkap" value="<?= $nama_lengkap ?>" id="nama_lengkap" class="form-control custom-input">
+                                    </td>
+                                </tr>
+                                <tr>
                                     <td>Email</td>
                                     <td>
                                         <input type="email" name="email" value="<?= $email ?>" id="email" class="form-control custom-input">
