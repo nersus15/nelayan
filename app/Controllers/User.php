@@ -448,5 +448,5 @@ class User extends BaseController
         $transaksiModel = new \App\Models\TransaksiModel();
         return $this->response->setJSON($transaksiModel->find($id));
     }
-git
+
 }
