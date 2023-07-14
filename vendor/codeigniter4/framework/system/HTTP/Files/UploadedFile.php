@@ -334,7 +334,7 @@ class UploadedFile extends File implements UploadedFileInterface
      */
     public function store(?string $filepath = null, ?string $fileName = null): string
     {
-        if(empty($filepath))
+       if(empty($filepath))
             $filepath = WRITEPATH . 'uploads/' . rtrim($filepath ?? date('Ymd'), '/') . '/';
         $fileName ??= $this->getRandomName();
 
