@@ -448,23 +448,4 @@ class User extends BaseController
         $transaksiModel = new \App\Models\TransaksiModel();
         return $this->response->setJSON($transaksiModel->find($id));
     }
-
-    function email()
-    {
-        $email = \Config\Services::email();
-        try {
-
-            $email->setFrom('kamscode@lumbungrekayasaliterasi.com', 'Your Name');
-            $email->setTo('fathur.ashter15@gmail.com');
-
-            $email->setSubject('Email Test');
-            $email->setMessage('Testing the email class.');
-            $config = config('Email');
-            $email->initialize($config);
-            $email->send();
-            echo $email->printDebugger();
-        } catch (\Throwable $th) {
-            return $th->getMessage();
-        }
-    }
 }
