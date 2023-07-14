@@ -11,7 +11,7 @@
     <link href="<?= assets_url('vendor/sbadmin/css/styles.css') ?>" rel="stylesheet" />
     <link href="<?= assets_url('css/main.css') ?>" rel="stylesheet" />
     <link  href="<?= assets_url('vendor/fontawesome/css/all.css') ?>" rel="stylesheet" />
-    <script src="<?= assets_url('vendor/bootstrap/js/jquery.min.js') ?>"></script>
+    <script src="<?= assets_url('vendor/jquery/jquery.min.js') ?>"></script>
     <script>var basepath = "<?= base_url() ?>"</script>
     <?php 
         if(!isset($dataHeader)) $dataHeader = [];
@@ -55,7 +55,10 @@
         <!-- Navbar-->
         <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+                <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"><?php 
+                    $photo =sessiondata('login', 'photo');
+                    echo '<img style="width: 20px;height:20px; border-radius:100%; object-fit: cover" src="' . assets_url('img/profile/' . $photo) . '">'
+                ?></a>
                 <ul class="dropdown-menu dropdown-menu-end" id="user-menu" aria-labelledby="navbarDropdown">
                     <li><a class="dropdown-item" href="<?= base_url('profile') ?>">Settings</a></li>
                     <li>

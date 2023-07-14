@@ -64,7 +64,7 @@
                     <a id="nav-item-keranjang" class="nav-link" href="<?= base_url('keranjang') ?>">Keranjang </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="<?= base_url('track') ?>">Lacak Pesanan</a>
+                    <a class="nav-link" href="<?= base_url('tracking') ?>">Lacak Pesanan</a>
                 </li>
                 <li class="nav-item">
                     <?php if(!is_login()): ?>
@@ -157,7 +157,7 @@
                                     </div>
                                     <div class="buy">
                                         <span data-id="<?= $b['id'] ?>" class="btn-custom btn-tambah-belanja"><i class="fas fa-plus"></i></span>
-                                        <input data-username="<?= $b['pemilik'] ?>" data-nama="<?= $b['nama'] ?>" data-namalengkap="<?= $b['nama_lengkap'] ?>" data-alamat="<?= $textAlamat ?>" type="number" data-harga="<?= $b['harga'] ?>" class="jml-belanja" min="0" max="<?= $b['stok'] - $b['terjual'] ?>" name="jml-belanja" id="<?= $b['id'] ?>" >
+                                        <input data-hp="<?= $b['hp'] ?>" data-username="<?= $b['pemilik'] ?>" data-nama="<?= $b['nama'] ?>" data-namalengkap="<?= $b['nama_lengkap'] ?>" data-alamat="<?= $textAlamat ?>" type="number" data-harga="<?= $b['harga'] ?>" class="jml-belanja" min="0" max="<?= $b['stok'] - $b['terjual'] ?>" name="jml-belanja" id="<?= $b['id'] ?>" >
                                         <span data-id="<?= $b['id'] ?>"  class="btn-custom btn-kurangi-belanja"><i class="fas fa-minus"></i></span>
                                     </div>
                                 </div>

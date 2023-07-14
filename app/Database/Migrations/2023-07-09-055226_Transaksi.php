@@ -56,6 +56,16 @@ class Transaksi extends Migration
                 'type' => 'ENUM',
                 'constraint' => ['proses', 'siap', 'selesai', 'batal'],
                 'default' => 'proses'
+            ],
+            'pembatal' => [
+                'type' => 'ENUM',
+                'constraint' => ['', 'penjual', 'pembeli'],
+                'null' => true
+            ],
+            'alasan_batal' => [
+                'type' => 'VARCHAR',
+                'constraint' => 46,
+                'null' => true
             ]
         ]);
 

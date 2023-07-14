@@ -63,8 +63,8 @@ if (empty($data))
                                             <label for="inputEmail">Email address</label>
                                         </div>
                                         <div class="form-floating mb-3">
-                                            <input value="<?= $data['hp'] ?>" class="form-control" name="hp" id="hp" type="text" maxlength="15" placeholder="Nomor Hp" />
-                                            <label for="hp">No. Hp</label>
+                                            <input value="<?= $data['hp'] ?>" required class="form-control" name="hp" id="hp" type="text" maxlength="15" placeholder="Nomor Hp" />
+                                            <label for="hp">No. Hp <span class="symbol-required"></span></label>
                                         </div>
                                         <div class="row mb-3">
                                             <div class="col-md-6">
