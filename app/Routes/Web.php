@@ -11,6 +11,8 @@ $routes->post('login', 'User::login_post', ['filter' => 'TidakLogin']);
 $routes->get('register', 'User::register', ['filter' => 'TidakLogin']);
 $routes->post('register', 'User::register_post', ['filter' => 'TidakLogin']);
 $routes->get('logout', 'User::logout', ['filter' => 'HarusLogin']);
+$routes->get('profile', 'User::profile', ['filter' => 'HarusLogin']);
+$routes->post('profile/update', 'User::update_profile', ['filter' => 'HarusLogin']);
 
 $routes->get('keranjang', 'User::keranjang');
 $routes->post('pesan', 'User::pesan');

@@ -52,7 +52,8 @@ class BarangModel extends Model
 
     function getWithTerjual($pemilik = null){
         $m = $this->join('users', 'users.username = barang.pemilik')
-            ->join('transaksi', 'transaksi.barang = barang.id AND transaksi.status IN("siap", "selesai") AND transaksi.dibuat LIKE "' . waktu(null, MYSQL_DATE_FORMAT) . '%"', 'left')->select('barang.*,users.hp, users.alamat, users.detail_alamat, users.nama_lengkap, transaksi.barang');
+            ->join('transaksi', 'transaksi.barang = barang.id AND transaksi.status IN("siap", "selesai") AND transaksi.dibuat LIKE "' . waktu(null, MYSQL_DATE_FORMAT) . '%"', 'left')
+            ->select('barang.*,users.hp, users.alamat, users.detail_alamat, users.nama_lengkap, transaksi.barang, transaksi.jumlah');
         $db = \Config\Database::connect();
         $wilayah = $db->table('wilayah')->get()->getResult();
         if(!empty($pemilik))
@@ -66,13 +67,14 @@ class BarangModel extends Model
             $t = (object) $t;
             if(isset($data[$t->id])){
                 if(!empty($t->barang))
-                    $data[$t->id]->terjual += 1;
+                    $data[$t->id]->terjual += $t->jumlah;
             }else{
-                $t->terjual = (!empty($t->barang) ? 1 : 0);
-                unset($t->barang);
+                $t->terjual = (!empty($t->barang) ? $t->jumlah : 0);
+                unset($t->barang, $t->jumlah);
                 $data[$t->id] = $t;
             }
         }
+        
         $tmpWil = $wilayah;
         $wilayah = [];
         foreach($tmpWil as $w){

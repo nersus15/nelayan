@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\UserModel;
+use CodeIgniter\Files\File;
 
 class User extends BaseController
 {
@@ -12,9 +13,64 @@ class User extends BaseController
     {
         $this->userModel = new UserModel();
     }
-    public function index()
+    function profile()
     {
-        //
+        $data = [
+            'activeMenu' => '',
+            'dataHeader' => [
+                'title' => 'Profile',
+                'extra_js' => [
+                    'vendor/select2/js/select2.js'
+                ],
+                'extra_css' => [
+                    'css/profile.css',
+                    'vendor/select2/css/select2.css',
+                    'vendor/select2-bootstrap4-theme/select2-bootstrap4.css'
+                ]
+            ],
+            'contents' => [
+                'dashboard' => [
+                    'view' => 'pages/profile',
+                    'data' => sessiondata()
+                ]
+            ]
+        ];
+        return view('templates/sbadmin', $data);
+    }
+
+    function update_profile()
+    {
+        $post = $this->request->getPost();
+        $userModel = new \App\Models\UserModel();
+
+        $username = $post['username'];
+        $password = $post['password'];
+
+        unset($post['username'], $post['password']);
+        if (!empty($password)) {
+            $post['password'] = password_hash($password, PASSWORD_DEFAULT);
+        }
+        $post['alamat'] = empty($post['desa']) ? $post['kecamatan'] : $post['desa'];
+        unset($post['kecamatan'], $post['desa']);
+        $files = $this->request->getFiles();
+        try {
+            if (isset($files['photo'])) {
+                $img = $this->request->getFile('photo');
+                $nama = random(8) . '.' . getExt($img->getName(), true);
+                if (!$img->hasMoved()) {
+                    $filepath = $img->store(ASSETS_PATH . 'img/profile/', $nama);
+                    new File($filepath);
+                }
+                $post['photo'] = $nama;
+            }
+            $userModel->update($username, $post);
+        } catch (\Throwable $th) {
+            return redirect()->to('profile')->with('response', $th->getMessage());
+        }
+
+        $session = session();
+        $session->set('login', $post + ['username' => $username]);
+        return redirect()->to('profile')->with('response', 'Berhasil memperbarui password');
     }
 
     function login()
@@ -97,7 +153,7 @@ class User extends BaseController
             'nama_lengkap' => $post['nama'],
             'hp' => $post['hp'],
             'email' => $post['email'],
-            'alamat' => $post['desa'],
+            'alamat' => empty($post['desa']) ? $post['kecamatan'] : $post['desa'],
             'detail_alamat' => $post['alamat'],
             'password' => password_hash($post['password'], PASSWORD_DEFAULT)
         ];
@@ -256,8 +312,8 @@ class User extends BaseController
                             'Actions' => function ($rec) {
                                 $btnTerima = '<a href="' . base_url('terima/' . $rec['id']) . '" data-id="' . $rec['id'] . '" class="btn btn-info col-sm-8">Terima</a>';
                                 $btnCancel = '<a href="' . base_url('tolak') . '" data-id="' . $rec['id'] . '" class="btn batalkan-pesanan btn-warning col-sm-8">Tolak</a>';
-                                $btnInfo = '<button data-id="'. $rec['id'] .'" class="info-pesanan btn-sm btn btn-info">Info Pembatalan</button>';
-                               
+                                $btnInfo = '<button data-id="' . $rec['id'] . '" class="info-pesanan btn-sm btn btn-info">Info Pembatalan</button>';
+
                                 return $rec['status'] == 'batal' ? $btnInfo : ($rec['status'] == 'proses' ? '<div class="row" style="justify-content: center;row-gap: 6px;">' . $btnTerima . $btnCancel . '</div>' : '');
                             }
                         ],
@@ -341,7 +397,7 @@ class User extends BaseController
                 ->join('users', 'users.username = barang.pemilik')
                 ->where('transaksi.token', $token)
                 ->findAll();
-            if(empty($data))
+            if (empty($data))
                 return $this->response->setStatusCode(500)->setJSON(['message' => 'Transaksi dengan token <b>' . $token . '</b> tidak ditemukan']);
             $db = \Config\Database::connect();
             $dataWil = $db->table('wilayah')->get()->getResultArray();
@@ -387,7 +443,8 @@ class User extends BaseController
         }
     }
 
-    function info($id){
+    function info($id)
+    {
         $transaksiModel = new \App\Models\TransaksiModel();
         return $this->response->setJSON($transaksiModel->find($id));
     }
