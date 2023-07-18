@@ -30,4 +30,4 @@ $routes->post('barang/tambah', 'Barang::post_tambah', ['filter' => 'HarusLogin']
 
 $routes->get('penjualan', 'User::penjualan', ['filter' => 'HarusLogin']);
 $routes->post('tolak', 'User::tolak', ['filter' => 'HarusLogin']);
-$routes->get('terima/(:any)', 'User::penjualan/$1', ['filter' => 'HarusLogin']);
+$routes->get('terima/(:any)', 'User::terima/$1', ['filter' => 'HarusLogin']);

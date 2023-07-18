@@ -86,6 +86,7 @@ $(document).ready(function () {
                 row += '<td>Rp.' + data.harga.toString().rupiahFormat() + '</td>';
                 row += '<td>' + data.jumlah + '</td>';
                 row += '<td>Rp.' + (parseInt(data.harga) * parseInt(data.jumlah)).toString().rupiahFormat() + '</td>';
+                row += '<td><span class="badge '+ bg +'">' + data.status + '</span></td>';
 
                 if (data.status == 'proses') {
                     row += '<td><button data-id="' + data.id + '" class="batalkan-pesanan btn btn-danger">Batalkan</button></td>';
