@@ -159,6 +159,7 @@ if (!empty($user)){
                 dataPesanan = JSON.parse(dataPesanan);
                 var total = 0;
                 dataPesanan.forEach(pesanan => {
+                    if(pesanan.jumlah < 1) return;
                     total += parseInt(pesanan.harga) * parseInt(pesanan.jumlah);
                     form.append("<input name='barang[]' value='"+ pesanan.id +"' type='hidden' />");
                     form.append("<input name='jumlah[]' value='"+ pesanan.jumlah +"' type='hidden' />");
