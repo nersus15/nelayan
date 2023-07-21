@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class BarangModel extends Model
 {
     protected $DBGroup          = 'default';
-    protected $table            = 'barang';
+    protected $table            = 'hasil_tangkapan';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
@@ -22,7 +22,7 @@ class BarangModel extends Model
         'satuan',
         'harga',
         'photo',
-        'pemilik',
+        'nelayan',
         'deskripsi'
     ];
 
@@ -50,16 +50,21 @@ class BarangModel extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    function getWithTerjual($pemilik = null){
-        $m = $this->join('users', 'users.username = barang.pemilik')
-            ->join('transaksi', 'transaksi.barang = barang.id AND transaksi.status IN("siap", "selesai") AND transaksi.dibuat LIKE "' . waktu(null, MYSQL_DATE_FORMAT) . '%"', 'left')
-            ->select('barang.*,users.hp, users.alamat, users.detail_alamat, users.nama_lengkap, transaksi.barang, transaksi.jumlah');
+    function getWithTerjual($pemilik = null, $id = null){
+        $m = $this->join('nelayan', 'nelayan.id = hasil_tangkapan.nelayan')
+            ->join('transaksi', 'transaksi.barang = hasil_tangkapan.id AND transaksi.status IN("siap", "selesai") AND transaksi.dibuat LIKE "' . waktu(null, MYSQL_DATE_FORMAT) . '%"', 'left')
+            ->select('hasil_tangkapan.*,nelayan.hp, nelayan.alamat, nelayan.detail_alamat, nelayan.nama_lengkap, nelayan.dibuat bergabung, transaksi.barang, transaksi.jumlah');
+      
         $db = \Config\Database::connect();
         $wilayah = $db->table('wilayah')->get()->getResult();
         if(!empty($pemilik))
-            $m->where('barang.pemilik', $pemilik);
+            $m->where('hasiL_tangkapan.nelayan', $pemilik);
+        if(!is_null($id) && !is_array($id))
+            $m->where('hasil_tangkapan.id', $id);
+        elseif(!is_null($id) && is_array($id))
+            $m->whereIn('hasil_tangkapan.id', $id);
 
-        $tmp = $m->orderBy('barang.diupdate', 'DESC')->findAll();
+        $tmp = $m->orderBy('hasiL_tangkapan.diupdate', 'DESC')->findAll();
         $data = [];
 
 

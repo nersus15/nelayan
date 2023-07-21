@@ -4,7 +4,7 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class Transaksi extends Migration
+class Transaki extends Migration
 {
     public function up()
     {
@@ -70,7 +70,7 @@ class Transaksi extends Migration
         ]);
 
         $this->forge->addPrimaryKey('id');
-        $this->forge->addForeignKey('barang', 'barang', 'id', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('barang', 'hasil_tangkapan', 'id', 'CASCADE', 'CASCADE');
         $this->forge->createTable('transaksi');
     }
 

@@ -74,6 +74,7 @@ if (!empty($user)) {
                                                 <th>Harga</th>
                                                 <th>Jumlah</th>
                                                 <th>SubTotal</th>
+                                                <th>Status</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>

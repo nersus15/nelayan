@@ -26,6 +26,15 @@ if (!empty($postData))
         <input type="hidden" name="mode" value="<?= $mode ?>">
         <div class="card-body">
             <div class="row">
+                <div class="form-group col-sm-12">
+                    <label for="">Nelayan <span class="symbol-required"></span></label>
+                    <select required class="form-control" name="nelayan" id="nelayan">
+                        <option value="">Pilih Nelayan</option>
+                        <?php foreach($nelayan as $n) :?>
+                            <option <?= $dataBarang['nelayan'] == $n['id'] ? 'selected' : '' ?> value="<?= $n['id'] ?>"><?= $n['nama_lengkap'] ?></option>
+                        <?php endforeach ?>
+                    </select>
+                </div>
                 <div class="form-group col-sm-12 col-md-6">
                     <label for="">Nama Barang <span class="symbol-required"></span></label>
                     <input maxlength="46" required type="text" name="nama" value="<?= $dataBarang['nama'] ?>" id="nama" class="form-control">

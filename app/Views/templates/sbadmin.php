@@ -85,10 +85,15 @@
                         </a>
                         <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                             <nav class="sb-sidenav-menu-nested nav">
-                                <a class="nav-link" href="<?= base_url('barang') ?>">Daftar Barang</a>
-                                <a class="nav-link" href="<?= base_url('penjualan') ?>">Penjualan</a>
+                                <a class="nav-link" href="<?= base_url('barang/masuk') ?>">Masuk</a>
+                                <a class="nav-link" href="<?= base_url('barang/keluar') ?>">Keluar</a>
                             </nav>
                         </div>
+                        <a class="nav-link" href="<?= base_url('nelayan') ?>">
+                            <div class="sb-nav-link-icon"><i class="fas fa-people-arrows"></i></div>
+                            Data Nelayan Partner
+                        </a>
+                       
                         <a class="nav-link" href="<?= base_url('logout') ?>">
                             <div class="sb-nav-link-icon"><i class="fas fa-sign-out-alt"></i></div>
                             Logout

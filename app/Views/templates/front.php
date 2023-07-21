@@ -68,7 +68,7 @@
                 </li>
                 <li class="nav-item">
                     <?php if(!is_login()): ?>
-                    <a class="nav-link" href="<?= base_url('login') ?>">Login</a>
+                    <!-- <a class="nav-link" href="<?php // echo base_url('login') ?>">Login</a> -->
                     <?php else: ?>
                         <a class="nav-link" href="<?= base_url('dashboard') ?>">Dashboard</a>
                     <?php endif ?>
@@ -129,7 +129,7 @@
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span class="discount"><?= $b['stok'] - $b['terjual'] > 0 ? 'Tersedia' : 'Habis' ?></span>
                                         <span class="wishlist">
-                                           <?= $b['pemilik'] ?>
+                                           <?= $b['nama_lengkap'] ?>
                                         </span>
                                     </div>
                                 </div>
@@ -157,7 +157,7 @@
                                     </div>
                                     <div class="buy">
                                         <span data-id="<?= $b['id'] ?>" class="btn-custom btn-tambah-belanja"><i class="fas fa-plus"></i></span>
-                                        <input data-hp="<?= $b['hp'] ?>" data-username="<?= $b['pemilik'] ?>" data-nama="<?= $b['nama'] ?>" data-namalengkap="<?= $b['nama_lengkap'] ?>" data-alamat="<?= $textAlamat ?>" type="number" data-harga="<?= $b['harga'] ?>" class="jml-belanja" min="0" max="<?= $b['stok'] - $b['terjual'] ?>" name="jml-belanja" id="<?= $b['id'] ?>" >
+                                        <input data-hp="<?= $b['hp'] ?>" data-username="<?= $b['nelayan'] ?>" data-nama="<?= $b['nama'] ?>" data-namalengkap="<?= $b['nama_lengkap'] ?>" data-alamat="<?= $textAlamat ?>" type="number" data-harga="<?= $b['harga'] ?>" class="jml-belanja" min="0" max="<?= $b['stok'] - $b['terjual'] ?>" name="jml-belanja" id="<?= $b['id'] ?>" >
                                         <span data-id="<?= $b['id'] ?>"  class="btn-custom btn-kurangi-belanja"><i class="fas fa-minus"></i></span>
                                     </div>
                                 </div>

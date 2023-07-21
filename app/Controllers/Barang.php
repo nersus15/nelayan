@@ -11,17 +11,146 @@ use function PHPUnit\Framework\throwException;
 class Barang extends BaseController
 {
     private $barangModel;
-    function __construct() {
+    function __construct()
+    {
         $this->barangModel = new BarangModel();
     }
-    public function index()
+    public function keluar()
     {
-        //
+        $transaksiModel = new \App\Models\TransaksiModel();
+        $dataPenjualan = $transaksiModel->select('hasil_tangkapan.nama, hasil_tangkapan.harga, transaksi.*')
+            ->join('hasil_tangkapan', 'hasil_tangkapan.id = transaksi.barang')
+            // ->where('hasil_tangkapan.nelayan', sessiondata('login', 'username'))
+            ->orderBy('transaksi.dibuat', 'DESC')
+            ->findAll();
+
+
+        $wilayah = getWil();
+        $session = session();
+        $respnse = $session->getFlashdata('response');
+        $data = [
+            'dataHeader' => [
+                'title' => 'Penjualan',
+                'extra_js' => [
+                    "vendor/datatables/jquery.dataTables.min.js",
+                    "vendor/datatables-bs4/js/dataTables.bootstrap4.min.js",
+                    "vendor/datatables-responsive/js/dataTables.responsive.min.js",
+                    "vendor/datatables-responsive/js/responsive.bootstrap4.min.js",
+                    "vendor/datatables-buttons/js/dataTables.buttons.min.js",
+                    "vendor/datatables-buttons/js/buttons.bootstrap4.min.js",
+                    "vendor/jszip/jszip.min.js",
+                    "vendor/pdfmake/pdfmake.min.js",
+                    "vendor/pdfmake/vfs_fonts.js",
+                    "vendor/datatables-buttons/js/buttons.html5.min.js",
+                    "vendor/datatables-buttons/js/buttons.print.min.js",
+                    "vendor/datatables-buttons/js/buttons.colVis.min.js",
+                ],
+            ],
+            'dataFooter' => [
+                'extra_js' => [
+                    'js/pages/penjualan.js'
+                ]
+            ],
+            'contents' => [
+                'dt-penjualan' => [
+                    'view' => 'components/datatables',
+                    'data' => [
+                        'desc' => $respnse,
+                        'header' => [
+                            'No' => function ($rec, $k, $i) {
+                                return $i;
+                            },
+                            'Barang' => function ($rec) {
+                                return '<a href="' . base_url('barang/info/' . $rec['barang']) . '">' . $rec['nama'] . '</a>';
+                            },
+                            'Harga' => function ($rec) {
+                                return rupiah_format($rec['harga']);
+                            },
+                            'Jumlah' => 'jumlah',
+                            'Nama Pembeli' => 'pembeli',
+                            'No.Hp' => 'hp',
+                            'Alamat' => function ($rec) use ($wilayah) {
+                                $desa = '';
+                                $kecamatan = '';
+                                $alamat = $rec['alamat_pembeli'];
+                                if (level_wilayah($alamat) == 3)
+                                    $kecamatan == 'Kecamatan ' . $wilayah['kecamtan'][$alamat];
+                                else {
+                                    $desa = 'Desa ' . $wilayah['desa'][$alamat] . ', ';
+                                    $kecamatan = $wilayah['kecamatan'][substr($alamat, 0, 8) . '.0000'];
+                                }
+
+                                return $desa . $kecamatan;
+                            },
+                            'Detail Alamat' => 'detail_alamat_pembeli',
+                            'Status' => function ($rec) {
+                                $flag = 'bg-warning';
+                                $status = $rec['status'];
+                                if ($status == 'siap')
+                                    $flag = 'bg-info';
+                                elseif ($status == 'selesai')
+                                    $flag = 'bg-success';
+                                elseif ($status == 'batal')
+                                    $flag = 'bg-danger';
+
+                                $status = '<span class="badge ' . $flag . '">' . ucfirst($rec['status']) . '</span>';
+                                return $status;
+                            },
+                            'Actions' => function ($rec) {
+                                $btnTerima = '<a href="' . base_url('terima/' . $rec['id']) . '" data-id="' . $rec['id'] . '" class="btn btn-info col-sm-8">Terima</a>';
+                                $btnCancel = '<a href="' . base_url('tolak') . '" data-id="' . $rec['id'] . '" class="btn batalkan-pesanan btn-warning col-sm-8">Tolak</a>';
+                                $btnInfo = '<button data-id="' . $rec['id'] . '" class="info-pesanan btn-sm btn btn-info">Info Pembatalan</button>';
+
+                                return $rec['status'] == 'batal' ? $btnInfo : ($rec['status'] == 'proses' ? '<div class="row" style="justify-content: center;row-gap: 6px;">' . $btnTerima . $btnCancel . '</div>' : '');
+                            }
+                        ],
+                        'data' => $dataPenjualan
+                    ]
+                ],
+                'modal' => [
+                    'view' => 'pages/form_pembatalan',
+                    'data' => [
+                        'pembatal' => 'penjual'
+                    ]
+                ]
+            ]
+        ];
+
+        return view('templates/sbadmin', $data);
     }
-    function list(){
-        $dataBarang = $this->barangModel->getWithTerjual(sessiondata('login', 'username'));
+    function info($id)
+    {
+        $model = new BarangModel();
+        $dataBarang = $model->getWithTerjual(null, $id)[$id];
+        $data = [
+            'dataHeader' => [
+                'title' => $dataBarang->nama,
+                'extra_js' => [],
+            ],
+            'dataFooter' => [
+                'extra_js' => [
+                    'js/pages/penjualan.js'
+                ]
+            ],
+            'contents' => [
+                'dt-penjualan' => [
+                    'view' => 'pages/info_barang',
+                    'data' => [
+                        'barang' => $dataBarang
+                    ]
+                ],
+
+            ]
+        ];
+
+        return view('templates/sbadmin', $data);
+    }
+    function list()
+    {
+        $dataBarang = $this->barangModel->getWithTerjual();
         $session = session();
         $response = $session->getFlashdata('response');
+        $wilayah = getWil();
         $data = [
             'activeMenu' => 'barang',
             'dataHeader' => [
@@ -51,26 +180,43 @@ class Barang extends BaseController
                     'view' => 'components/datatables',
                     'data' => [
                         'data' => $dataBarang,
-                        'desc' => !empty($response) ? $response : 'Data Baran Hari Ini <a href="'. base_url('barang/tambah') .'" class="btn btn-primary">Tambah<a/>',
+                        'desc' => !empty($response) ? $response : 'Data Barang Masuk <a href="' . base_url('barang/tambah') . '" class="btn btn-primary">Tambah<a/>',
                         'header' => [
-                            'No' => function($rec, $index, $row){return $row;},
-                            'Gambar' => function($rec){
+                            'No' => function ($rec, $index, $row) {
+                                return $row;
+                            },
+                            'Gambar' => function ($rec) {
                                 $photo = !empty($rec->photo) ? $rec->photo : 'contoh.jpg';
-                                return '<img width="100px" src="'. assets_url('img/barang/' . $photo) .'" class="img-fluid rounded thumbnail-image">';
+                                return '<img width="100px" src="' . assets_url('img/barang/' . $photo) . '" class="img-fluid rounded thumbnail-image">';
                             },
                             'Nama' => 'nama',
                             'Deskripsi' => 'deskripsi',
-                            'Harga' => function($rec){return rupiah_format($rec->harga);},
-                            'Terjual/Stok' => function($rec){
+                            'Harga' => function ($rec) {
+                                return rupiah_format($rec->harga);
+                            },
+                            'Terjual/Stok' => function ($rec) {
                                 $terjual = $rec->terjual;
                                 $stok = $rec->stok;
                                 $satuan = $rec->satuan;
                                 return $terjual . '/' . $stok . ' ' . ucfirst($satuan);
                             },
-                            'Actions' => function($rec){
+                            'Nelayan' => 'nama_lengkap',
+                            'No. Hp' => 'hp',
+                            'Alamat' => function ($rec) use ($wilayah) {
+                                $text_alamat = $rec->detail_alamat;
+                                $alamat = $rec->alamat;
+                                if (!empty($text_alamat)) $text_alamat .= ', ';
+                                if (!empty($alamat) && level_wilayah($alamat) == 3)
+                                    $text_alamat .= ' Kecmatan ' . $wilayah['kecamatan'][$alamat];
+                                elseif (!empty($alamat) && level_wilayah($alamat) ==  4)
+                                    $text_alamat .= ' Desa ' . $wilayah['desa'][$alamat] . ', Kec. ' . $wilayah['kecamatan'][substr($alamat, 0, 8) . '.0000'];
+
+                                return $text_alamat;
+                            },
+                            'Actions' => function ($rec) {
                                 $buttons = '<div class="row" style="text-align:center">
-                                    <div clas="col-sm-12 col-md-6 mt-2"><a class="btn btn-warning update-barang" href="barang/update/'.$rec->id.'">' . 'Update' . '</a></div>
-                                    <div clas="col-sm-12 col-md-6 mt-2"><a class="btn btn-danger delete-barang" href="barang/delete/'.$rec->id.'">' . 'Delete' . '</a></div>
+                                    <div clas="col-sm-12 col-md-6 mt-2"><a class="btn btn-warning update-barang" href="' . base_url('barang/update/' . $rec->id) . '">' . 'Update' . '</a></div>
+                                    <div clas="col-sm-12 col-md-6 mt-2"><a class="btn btn-danger delete-barang" href="' . base_url('barang/delete/' . $rec->id) . '">' . 'Delete' . '</a></div>
                                     </div>';
                                 return $buttons;
                             }
@@ -82,11 +228,15 @@ class Barang extends BaseController
 
         return view('templates/sbadmin', $data);
     }
-    function tambah(){
+    function tambah()
+    {
         $session = session();
         $response = $session->getFlashdata('response');
+        $nelayanModel = new \App\Models\NelayanModel();
+        $nelayan = $nelayanModel->findAll();
+
         $data = [
-             'activeMenu' => 'barang',
+            'activeMenu' => 'barang',
             'dataHeader' => [
                 'title' => 'Tambah Barang',
                 'extra_js' => [
@@ -100,16 +250,15 @@ class Barang extends BaseController
                 ]
             ],
             'dataFooter' => [
-                'extra_js' => [
-                ]
+                'extra_js' => []
             ],
             'contents' => [
                 'barang' => [
                     'view' => 'pages/tambah_barang',
                     'data' => [
                         'mode' => 'baru',
-                        'desc' => $response
-                        
+                        'desc' => $response,
+                        'nelayan' => $nelayan
                     ]
                 ]
             ]
@@ -117,12 +266,15 @@ class Barang extends BaseController
 
         return view('templates/sbadmin', $data);
     }
-    function update($id){
+    function update($id)
+    {
         $session = session();
         $response = $session->getFlashdata('response');
         $dataBarang = $this->barangModel->find($id);
+        $nelayanModel = new \App\Models\NelayanModel();
+        $nelayan = $nelayanModel->findAll();
         $data = [
-           'activeMenu' => 'barang',
+            'activeMenu' => 'barang',
             'dataHeader' => [
                 'title' => 'Update Barang',
                 'extra_js' => [
@@ -136,8 +288,7 @@ class Barang extends BaseController
                 ]
             ],
             'dataFooter' => [
-                'extra_js' => [
-                ]
+                'extra_js' => []
             ],
             'contents' => [
                 'barang' => [
@@ -145,7 +296,8 @@ class Barang extends BaseController
                     'data' => [
                         'mode' => 'edit',
                         'desc' => $response,
-                        'dataBarang' => $dataBarang
+                        'dataBarang' => $dataBarang,
+                        'nelayan' => $nelayan
                     ]
                 ]
             ]
@@ -153,43 +305,47 @@ class Barang extends BaseController
 
         return view('templates/sbadmin', $data);
     }
-    function post_tambah(){
+    function post_tambah()
+    {
         $post = $_POST;
         $mode = $post['mode'];
-        if(!in_array($mode,['baru', 'edit']))
-            throwException(New Exception("mode tidak valid", 403));
+        if (!in_array($mode, ['baru', 'edit']))
+            throwException(new Exception("mode tidak valid", 403));
 
         $data = [
             'id' => random(8),
             'nama' => $post['nama'],
-            'dibuat' =>waktu(),
+            'dibuat' => waktu(),
             'diupdate' => waktu(),
             'deskripsi' => $post['desc'],
             'stok' => $post['stok'],
             'satuan' => $post['satuan'],
             'harga' => $post['harga'],
-            'photo' => $post['photo'],
-            'pemilik' => sessiondata('login', 'username')
+            'nelayan' => $post['nelayan'],
         ];
-        if($mode == 'edit'){
+        if (isset($post['photo']) && !empty($post['photo']))
+            $data['photo'] = $post['photo'];
+
+        if ($mode == 'edit') {
             unset($data['id'], $data['dibuat']);
         }
 
         try {
-            if($mode == 'baru')
+            if ($mode == 'baru')
                 $this->barangModel->insert($data);
-            elseif($mode == 'edit')
+            elseif ($mode == 'edit')
                 $this->barangModel->update($post['id'], $data);
-            return redirect()->to(base_url(($mode == 'baru' ? 'barang/tambah' : 'barang/update/' . $post['id'])))->with('response', 'Berhasil '. ($mode == 'baru' ? 'tambah' : 'Update') .' barang' . ($mode == 'edit' ? $post['id'] : null));
+            return redirect()->to(base_url(($mode == 'baru' ? 'barang/tambah' : 'barang/update/' . $post['id'])))->with('response', 'Berhasil ' . ($mode == 'baru' ? 'tambah' : 'Update') . ' barang' . ($mode == 'edit' ? $post['id'] : null));
         } catch (\Throwable $th) {
             return redirect()->to(base_url('barang/tambah'))->with('response', $th->getMessage())->with('postData', $post);
         }
     }
-    function delete($id){
-        $barang = $this->barangModel->where('pemilik', sessiondata('login', 'username'))->where('id', $id)->find();
-        if(empty($barang))
+    function delete($id)
+    {
+        $barang = $this->barangModel->where('id', $id)->find();
+        if (empty($barang))
             return redirect()->to(base_url('barang'))->with('response', 'Barang tidak ditemukan');
-        
+
         $this->barangModel->delete($id);
         return redirect()->to(base_url('barang'))->with('response', 'Berhasil menghapus barang');
     }

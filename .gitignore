@@ -84,3 +84,6 @@ phpunit
 # Composer
 #-------------------------
 /vendor/
+
+/public/assets/img/barang/
+/public/assets/img/profile/

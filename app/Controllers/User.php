@@ -338,7 +338,7 @@ class User extends BaseController
 
         $transaksi = $transaksiModel->find($id);
         if (empty($transaksi)) {
-            return redirect()->to(base_url('penjualan'))->with('response', 'Tidak ada transaksi yang ditemukan');
+            return redirect()->to(base_url('barang/keluar'))->with('response', 'Tidak ada transaksi yang ditemukan');
         }
 
         $data = [
@@ -346,7 +346,7 @@ class User extends BaseController
             'status' => 'siap'
         ];
         $transaksiModel->update($id, $data);
-        return redirect()->to(base_url('penjualan'))->with('response', 'Anda telah menerima pesanan, segera persiapkan pesanan');
+        return redirect()->to(base_url('barang/keluar'))->with('response', 'Anda telah menerima pesanan, segera persiapkan pesanan');
     }
     function tolak()
     {
@@ -354,7 +354,7 @@ class User extends BaseController
         $post = $this->request->getPost();
         $transaksi = $transaksiModel->find($post['id']);
         if (empty($transaksi)) {
-            return redirect()->to(base_url('penjualan'))->with('response', 'Tidak ada transaksi yang ditemukan');
+            return redirect()->to(base_url('barang/keluar'))->with('response', 'Tidak ada transaksi yang ditemukan');
         }
 
         $data = [
@@ -364,7 +364,23 @@ class User extends BaseController
             'alasan_batal' => $post['alasan']
         ];
         $transaksiModel->update($post['id'], $data);
-        return redirect()->to($post['pembatal'] == 'pembeli' ? base_url('tracking') : base_url('penjualan'))->with('response', 'Anda telah membatalkan pesanan');
+        return redirect()->to($post['pembatal'] == 'pembeli' ? base_url('tracking') : base_url('barang/keluar'))->with('response', 'Anda telah membatalkan pesanan');
+    }
+
+    function selesai($id)
+    {
+        $transaksiModel = new \App\Models\TransaksiModel();
+        $transaksi = $transaksiModel->find($id);
+        if (empty($transaksi)) {
+            return redirect()->to(base_url('tracking'))->with('response', 'Tidak ada transaksi yang ditemukan');
+        }
+
+        $data = [
+            'diupdate' => waktu(),
+            'status' => 'selesai',
+        ];
+        $transaksiModel->update($id, $data);
+        return redirect()->to(base_url('tracking') )->with('response', 'Anda telah membatalkan pesanan');
     }
 
 
@@ -378,13 +394,12 @@ class User extends BaseController
             $transaksiModel = new \App\Models\TransaksiModel();
             $selects = [
                 'transaksi.id',
-                'users.username',
-                'users.nama_lengkap',
-                'users.alamat',
-                'users.detail_alamat',
-                'users.hp',
-                'barang.nama',
-                'barang.harga',
+                'nelayan.nama_lengkap',
+                'nelayan.alamat',
+                'nelayan.detail_alamat',
+                'nelayan.hp',
+                'hasil_tangkapan.nama',
+                'hasil_tangkapan.harga',
                 'transaksi.jumlah',
                 'transaksi.status',
                 'transaksi.pembeli',
@@ -393,8 +408,8 @@ class User extends BaseController
             ];
 
             $data = $transaksiModel->select(join(', ', $selects))
-                ->join('barang', 'barang.id = transaksi.barang')
-                ->join('users', 'users.username = barang.pemilik')
+                ->join('hasil_tangkapan', 'hasil_tangkapan.id = transaksi.barang')
+                ->join('nelayan', 'nelayan.id = hasil_tangkapan.nelayan')
                 ->where('transaksi.token', $token)
                 ->findAll();
             if (empty($data))
