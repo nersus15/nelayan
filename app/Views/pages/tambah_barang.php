@@ -31,7 +31,7 @@ if (!empty($postData))
                     <select required class="form-control" name="nelayan" id="nelayan">
                         <option value="">Pilih Nelayan</option>
                         <?php foreach($nelayan as $n) :?>
-                            <option <?= $dataBarang['nelayan'] == $n['id'] ? 'selected' : '' ?> value="<?= $n['id'] ?>"><?= $n['nama_lengkap'] ?></option>
+                            <option <?= isset($dataBarang['nelayan']) && $dataBarang['nelayan'] == $n['id'] ? 'selected' : '' ?> value="<?= $n['id'] ?>"><?= $n['nama_lengkap'] ?></option>
                         <?php endforeach ?>
                     </select>
                 </div>

@@ -5,7 +5,7 @@ $token = $session->getFlashdata('token');
 $data = $session->getFlashdata('loginData');
 if (empty($data))
     $data = ['nama' => null, 'alamat' => null, 'hp' => null, 'kecamatan' => null, 'desa' => null, 'detailAlamat' => null];
-if (!empty($user)){
+if (!empty($user)) {
     $data = [
         'nama' => $user['username'],
         'alamat' => $user['alamat'],
@@ -80,6 +80,14 @@ if (!empty($user)){
                                             <input required value="<?= $data['hp'] ?>" class="form-control" name="hp" id="inputEmail" type="text" />
                                             <label for="inputEmail">Hp <span class="symbol-required"></span></label>
                                         </div>
+                                        <div class="form-floating mb-3 mb-md-0">
+                                            <select name="jenis" id="jenis" required class="form-control">
+                                                <option value="">Pilih</option>
+                                                <option value="ambil_sendiri">Ambil Sendiri</option>
+                                                <option value="cod">COD - Ongkir RP.5000,00</option>
+                                            </select>
+                                            <label for="jenis">Metode Pengambilan <span class="symbol-required"></span></label>
+                                        </div>
                                         <div class="col-sm-12">
                                             <table id="tbl-keranjang" class="table">
                                                 <thead>
@@ -94,7 +102,7 @@ if (!empty($user)){
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    
+
                                                 </tbody>
                                             </table>
                                         </div>
@@ -116,11 +124,11 @@ if (!empty($user)){
     </div>
     <script src="<?= assets_url('vendor/sbadmin/js/scripts.js') ?>"></script>
     <script>
-        $(document).ready(function(){
+        $(document).ready(function() {
             var dataDesa = <?= json_encode($desa) ?>;
             var desaTerpilih = "<?= $data['desa'] ?>";
             var token = "<?= $token ?>";
-            if(token){
+            if (token) {
                 // Hapus data pesanan karena sudah checkout, tampilkan Token pesanan
                 $("#token").html('Token: ' + token + '<span>(Copy dan simpan token untuk melacak pesanan)</span>');
                 localStorage.removeItem('belanjaan_nelayan');
@@ -137,10 +145,22 @@ if (!empty($user)){
                     $("#desa").append('<option value="' + d.id + '">' + d.nama + '</option>');
                 });
 
-                setTimeout(function(){
+                setTimeout(function() {
                     $("#desa option[value='" + desaTerpilih + "']").prop('selected', true).parent().trigger('change');
                 });
             });
+            var total = 0;
+
+            $("#jenis").change(function(){
+                if(!$(this).val()) return;
+                if($(this).val() == 'cod')
+                    $("#total-bayar").text("Total: Rp." + (parseInt(total) + 5000).toString().rupiahFormat());
+                else
+                    $("#total-bayar").text("Total: Rp." + parseInt(total).toString().rupiahFormat());
+
+            });
+
+            $("#jenis").trigger('change')
 
             $("#kecamatan").trigger('change');
 
@@ -149,19 +169,18 @@ if (!empty($user)){
             var table = $('#tbl-keranjang');
             var form = $("form");
             var tbody = table.find('tbody');
-            if(!dataPesanan){
-                if(token)
+            if (!dataPesanan) {
+                if (token)
                     tbody.append('<tr><td style="text-align:center" colspan=7>Anda sudah melakukan checkout / pemesanan</td></tr>');
                 else
                     tbody.append('<tr><td style="text-align:center" colspan=7>Keranjang Masih Kosong</td></tr>');
-            }else{
+            } else {
                 dataPesanan = JSON.parse(dataPesanan);
-                var total = 0;
                 dataPesanan.forEach(pesanan => {
-                    if(pesanan.jumlah < 1) return;
+                    if (pesanan.jumlah < 1) return;
                     total += parseInt(pesanan.harga) * parseInt(pesanan.jumlah);
-                    form.append("<input name='barang[]' value='"+ pesanan.id +"' type='hidden' />");
-                    form.append("<input name='jumlah[]' value='"+ pesanan.jumlah +"' type='hidden' />");
+                    form.append("<input name='barang[]' value='" + pesanan.id + "' type='hidden' />");
+                    form.append("<input name='jumlah[]' value='" + pesanan.jumlah + "' type='hidden' />");
 
                     row = '<tr>';
                     row += '<td>' + pesanan.nama + '</td>';
@@ -174,7 +193,7 @@ if (!empty($user)){
 
                     tbody.append(row);
                 });
-                tbody.append('<tr><td style="text-align:center" colspan="7"><b>Total: Rp. ' + total.toString().rupiahFormat() + '</b></td></tr>')
+                tbody.append('<tr><td style="text-align:center" colspan="7"><b id="total-bayar">Total: Rp. ' + total.toString().rupiahFormat() + '</b></td></tr>')
             }
 
         });
