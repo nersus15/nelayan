@@ -16,19 +16,16 @@ class Home extends BaseController
     function dashboard(){
         $transaksiModel = new \App\Models\TransaksiModel();
         $db = \Config\Database::connect();
-        $waktu = waktu(null, MYSQL_DATE_FORMAT);
-        $tgl1 = substr($waktu, 0, 7) . '01';
+        $waktu = waktu(time() + (60 * 60 * 24), MYSQL_DATE_FORMAT);
+        $tgl1 = substr($waktu, 0, 7) . '-01';
         $tglHariIni = intval( substr($waktu, 8, 9));
         $tmp = $transaksiModel->select('jumlah, transaksi.diupdate, status')
-            ->join('barang', 'barang.id = transaksi.barang')
             ->where("transaksi.diupdate BETWEEN '$tgl1' AND '$waktu'", null, false)
-            ->where('barang.pemilik', sessiondata('login', 'username'))
             ->findAll();
         $dataPenjualan = [];
-        $tBarang = $db->table('barang')->where('pemilik', sessiondata('login', 'username'))->get()->getNumRows();
-        $tSelesai = $db->table('transaksi')->join('barang', 'barang.id = transaksi.barang')->where('status', 'selesai')->where('barang.pemilik', sessiondata('login', 'username'))->get()->getNumRows();
-        $tBatal = $db->table('transaksi')->join('barang', 'barang.id = transaksi.barang')->where('status', 'batal')->where('barang.pemilik', sessiondata('login', 'username'))->get()->getNumRows();
-        
+        $tBarang = $db->table('hasil_tangkapan')->get()->getNumRows();
+        $tSelesai = $db->table('transaksi')->where('status', 'selesai')->get()->getNumRows();
+        $tBatal = $db->table('transaksi')->where('status', 'batal')->get()->getNumRows();
         for ($i=1; $i <= $tglHariIni ; $i++) { 
            $dataPenjualan[$i] = [
                 'selesai' => 0,
@@ -50,7 +47,6 @@ class Home extends BaseController
                $dataPenjualan[$tanggal][$status] += $jumlah;
             }
         }
-
         $data = [
             'activeMenu' => 'dashboard',
             'dataHeader' => [

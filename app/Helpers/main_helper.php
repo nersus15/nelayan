@@ -864,3 +864,54 @@ if ( ! function_exists('level_wilayah'))
 		return intval(($ln + 1) / 3);
 	}
 }
+if(! function_exists('getWil')){
+    function getWil($level = null){
+        $db = \Config\Database::connect();
+
+        $q = $db->table('wilayah');
+        if(!is_null($level))
+            $q->where('level', $level);
+
+        $wilayah = $q->get()->getResult();
+        $wil = [
+            'desa' => [],
+            'kecamatan' => [],
+            'hirarki' => []
+        ];
+
+        foreach($wilayah as $w){
+            if($w->level == 3){
+                $wil['kecamatan'][$w->id] = $w->nama;
+                if(!isset($wil['hirarki'][$w->id])){
+                    $wil['hirarki'][$w->id] = [
+                        'nama' => $w->nama,
+                        'anak' => []
+                    ];                    
+                }
+            }elseif($w->level == 4){
+                $kec = substr($w->id, 0, 8) . '.0000';
+                $wil['desa'][$w->id] = $w->nama;
+                $wil['hirarki'][$kec]['anak'][$w->id] = $w->nama;
+            }
+        }
+        return $wil;
+    }
+}
+if (!function_exists('load_script')) {
+    function load_script($script, $data = array(), $return = true)
+    {
+        $ext = pathinfo($script, PATHINFO_EXTENSION);
+        if (empty($ext)) $script .= '.js';
+        if (!file_exists(get_path(ASSETS_PATH . 'js/') . get_path($script))) return null;
+        ob_start();
+        if (!empty($data))
+            extract($data);
+        include_once get_path(ASSETS_PATH . 'js/') . get_path($script) . $ext;
+        $_script = ob_get_contents() ;
+        ob_end_clean();
+        if ($return)
+            return $_script;
+        else
+            echo $_script;
+    }
+}

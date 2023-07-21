@@ -29,7 +29,7 @@ class Database extends Config
         'hostname' => 'localhost',
         'username' => 'root',
         'password' => '',
-        'database' => 'nelayan',
+        'database' => 'nelayan_v2',
         'DBDriver' => 'MySQLi',
         'DBPrefix' => '',
         'pConnect' => false,

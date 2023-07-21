@@ -70,11 +70,15 @@
         var dtid = "<?= $dtid ?? $idContent ?>";
         var ada_tambah = <?= $adaTambah ? 'true' : 'false' ?>;
         var buttons = <?= isset($buttons) && !empty($buttons) ? json_encode($buttons) : '[]' ?>;
+        var createdRow = <?= $createdRow ?? "function( row, data, dataIndex ) {}" ?>;
         var options = {
             "responsive": false,
             "lengthChange": true,
             "autoWidth": false,
-            "buttons": ["copy", "csv", "excel", "pdf", "print"]
+            "buttons": ["copy", "csv", "excel", "pdf", "print"],
+            "createdRow": function( row, data, dataIndex ) {
+   
+            }
         };
         if (ada_tambah) {
             options.buttons.push({
@@ -90,6 +94,9 @@
                 action: button.action.parseFunction()
             });
         });
+        if(createdRow)
+            options.createdRow = createdRow;
+
         $("#" + dtid).DataTable(options).buttons().container().appendTo('#' + dtid + '_wrapper .col-md-6:eq(0)');
     });
 </script>

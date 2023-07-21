@@ -22,7 +22,9 @@ $routes->get('info/(:any)', 'User::info/$1');
 
 // 
 $routes->get('dashboard', 'Home::dashboard', ['filter' => 'HarusLogin']);
-$routes->get('barang', 'Barang::list', ['filter' => 'HarusLogin']);
+$routes->get('barang/masuk', 'Barang::list', ['filter' => 'HarusLogin']);
+$routes->get('barang/keluar', 'Barang::keluar', ['filter' => 'HarusLogin']);
+$routes->get('barang/info/(:any)', 'Barang::info/$1', ['filter' => 'HarusLogin']);
 $routes->get('barang/tambah', 'Barang::tambah', ['filter' => 'HarusLogin']);
 $routes->get('barang/update/(:any)', 'Barang::update/$1', ['filter' => 'HarusLogin']);
 $routes->get('barang/delete/(:any)', 'Barang::delete/$1', ['filter' => 'HarusLogin']);
@@ -31,3 +33,9 @@ $routes->post('barang/tambah', 'Barang::post_tambah', ['filter' => 'HarusLogin']
 $routes->get('penjualan', 'User::penjualan', ['filter' => 'HarusLogin']);
 $routes->post('tolak', 'User::tolak', ['filter' => 'HarusLogin']);
 $routes->get('terima/(:any)', 'User::terima/$1', ['filter' => 'HarusLogin']);
+$routes->get('selesai/(:any)', 'User::selesai/$1', ['filter' => 'HarusLogin']);
+
+$routes->get('nelayan', 'Nelayan::index', ['filter' => 'HarusLogin']);
+$routes->post('nelayan/data/(:any)', 'Nelayan::find/$1', ['filter' => 'HarusLogin']);
+$routes->post('nelayan/save', 'Nelayan::save', ['filter' => 'HarusLogin']);
+$routes->get('nelayan/hapus/(:any)', 'Nelayan::hapus/$1', ['filter' => 'HarusLogin']);

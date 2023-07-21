@@ -85,8 +85,7 @@ if (!empty($user)){
                                                 <thead>
                                                     <tr>
                                                         <th>Barang</th>
-                                                        <th>Pemilik</th>
-                                                        <th>Username</th>
+                                                        <th>Hasil Tangkapan Nelayan</th>
                                                         <th>No.Hp</th>
                                                         <th>Alamat</th>
                                                         <th>Harga</th>
@@ -167,7 +166,6 @@ if (!empty($user)){
                     row = '<tr>';
                     row += '<td>' + pesanan.nama + '</td>';
                     row += '<td>' + pesanan.nama_pemilik + '</td>';
-                    row += '<td>' + pesanan.pemilik + '</td>';
                     row += '<td>' + pesanan.hp + '</td>';
                     row += '<td>' + pesanan.alamat + '</td>';
                     row += '<td>Rp. ' + pesanan.harga.toString().rupiahFormat() + '</td>';

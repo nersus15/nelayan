@@ -92,7 +92,10 @@ $(document).ready(function () {
                     row += '<td><button data-id="' + data.id + '" class="batalkan-pesanan btn btn-danger">Batalkan</button></td>';
                 } else if (data.status == 'batal') {
                     row += '<td><button data-id="' + data.id + '" class="info-pesanan btn btn-info">Info Pembatalan</button></td>';
-                } else {
+                } else if(data.status == 'siap'){
+                    row += '<td><a href="'+basepath+'selesai/'+ data.id +'" data-id="' + data.id + '" class="btn btn-sm btn-info">Selesaikan Pesanan</a></td>';
+                }
+                else {
                     row += '<td></td>';
                 }
                 row += '</tr>'
