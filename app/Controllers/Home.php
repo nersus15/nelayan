@@ -20,6 +20,7 @@ class Home extends BaseController
         $tgl1 = substr($waktu, 0, 7) . '-01';
         $tglHariIni = intval( substr($waktu, 8, 9));
         $tmp = $transaksiModel->select('jumlah, transaksi.diupdate, status')
+            ->whereIn('status', ['selesai', 'batal'])
             ->where("transaksi.diupdate BETWEEN '$tgl1' AND '$waktu'", null, false)
             ->findAll();
         $dataPenjualan = [];
