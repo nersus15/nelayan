@@ -68,7 +68,7 @@
                 </li>
                 <li class="nav-item">
                     <?php if(!is_login()): ?>
-                    <a class="nav-link" href="<?= base_url('login') ?>">Login</a>
+                    <!-- <a class="nav-link" href="<?php // echo base_url('login') ?>">Login</a> -->
                     <?php else: ?>
                         <a class="nav-link" href="<?= base_url('dashboard') ?>">Dashboard</a>
                     <?php endif ?>

@@ -58,9 +58,9 @@
         $("#tambah-nelayan").click(function() {
             bukaForm('baru');
         });
-        $(".update-nelayan").click(function() {
-            bukaForm('update', $(this).data('id'));
-        });
+        // $(".update-nelayan").click(function() {
+        //     bukaForm('update', $(this).data('id'));
+        // });
         $("#kecamatan").change(function() {
             var desa = data_wilayah['hirarki'][$(this).val()]['anak'];
             $("#desa").empty();
