@@ -208,7 +208,9 @@ class User extends BaseController
                 'detail_alamat_pembeli' => $post['alamat'],
                 'hp' => $post['hp'],
                 'status' => 'proses',
-                'token' => $token
+                'token' => $token,
+                'jenis' => $post['jenis'],
+                'ongkir' => $post['jenis'] == 'cod' ? 5000 : 0
             ];
         }
         try {

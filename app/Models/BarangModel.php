@@ -52,7 +52,7 @@ class BarangModel extends Model
 
     function getWithTerjual($pemilik = null, $id = null){
         $m = $this->join('nelayan', 'nelayan.id = hasil_tangkapan.nelayan')
-            ->join('transaksi', 'transaksi.barang = hasil_tangkapan.id AND transaksi.status IN("siap", "selesai") AND transaksi.dibuat LIKE "' . waktu(null, MYSQL_DATE_FORMAT) . '%"', 'left')
+            ->join('transaksi', 'transaksi.barang = hasil_tangkapan.id AND transaksi.status IN("siap", "selesai") ', 'left')
             ->select('hasil_tangkapan.*,nelayan.hp, nelayan.alamat, nelayan.detail_alamat, nelayan.nama_lengkap, nelayan.dibuat bergabung, transaksi.barang, transaksi.jumlah');
       
         $db = \Config\Database::connect();

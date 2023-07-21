@@ -30,7 +30,7 @@ class Barang extends BaseController
         $respnse = $session->getFlashdata('response');
         $data = [
             'dataHeader' => [
-                'title' => 'Penjualan',
+                'title' => 'Barang Keluar',
                 'extra_js' => [
                     "vendor/datatables/jquery.dataTables.min.js",
                     "vendor/datatables-bs4/js/dataTables.bootstrap4.min.js",
@@ -65,6 +65,9 @@ class Barang extends BaseController
                             },
                             'Harga' => function ($rec) {
                                 return rupiah_format($rec['harga']);
+                            },
+                            'Cara Pengambilan' => function($rec){
+                                return $rec['jenis'] == 'cod' ? 'COD - Ongkir Rp.5000,00' : 'Ambil Sendiri';
                             },
                             'Jumlah' => 'jumlah',
                             'Nama Pembeli' => 'pembeli',
@@ -154,7 +157,7 @@ class Barang extends BaseController
         $data = [
             'activeMenu' => 'barang',
             'dataHeader' => [
-                'title' => 'Daftar Barang ' . sessiondata('login', 'username'),
+                'title' => 'Daftar Barang Masuk',
                 'extra_js' => [
                     "vendor/datatables/jquery.dataTables.min.js",
                     "vendor/datatables-bs4/js/dataTables.bootstrap4.min.js",

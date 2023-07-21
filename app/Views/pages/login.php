@@ -50,7 +50,7 @@
                                     </form>
                                 </div>
                                 <div class="card-footer text-center py-3">
-                                    <div class="small">Belum punya akun ?<a href="<?= base_url('register') ?>">Klik disini</a> untuk mendaftar</div>
+                                    <!-- <div class="small">Belum punya akun ?<a href="<?php // echo base_url('register') ?>">Klik disini</a> untuk mendaftar</div> -->
                                 </div>
                             </div>
                         </div>
