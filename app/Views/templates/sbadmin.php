@@ -93,10 +93,7 @@
                             <div class="sb-nav-link-icon"><i class="fas fa-people-arrows"></i></div>
                             Data Nelayan Partner
                         </a>
-                        <a class="nav-link" href="<?= base_url('nelayan') ?>">
-                            <div class="sb-nav-link-icon"><i class="fas fa-chart-line"></i></div>
-                            Laporan
-                        </a>
+                       
                         <a class="nav-link" href="<?= base_url('logout') ?>">
                             <div class="sb-nav-link-icon"><i class="fas fa-sign-out-alt"></i></div>
                             Logout
