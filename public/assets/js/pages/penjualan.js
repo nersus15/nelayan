@@ -11,7 +11,8 @@ $(document).ready(function () {
                 $("#info-pembatalan").hide();
                 $("#alasan").prop('disabled', false);
                 $("#" + formid).find('button[type="submit"]').show();
-
+                $("#image-wrapper").show();
+                Dropzone.options.refund.headers['force-name'] = id;
 
                 $("#" + formid).find('#id-transaksi').val(id);
                 $("#" + formid).find('#alasan').val('');
@@ -45,6 +46,8 @@ $(document).ready(function () {
                     $("#_tanggal").val(res.diupdate);
                     $("#_pembatal").val(res.pembatal);
                 });
+                $("#image-wrapper").hide();
+
             });
             $("#" + modalid).on('hidden.bs.modal', function () {
                 $("#" + modalid).off('shown.bs.modal');
@@ -77,9 +80,10 @@ $(document).ready(function () {
                 else if (data.status == 'batal')
                     bg = 'bg-danger'
 
+                row += '<td>'+ (data.sudah_bayar != false ? '<a data-lightbox="Image-'+ token +'" href="' + basepath + 'assets/img/bayar/' + token + '.' +  data.sudah_bayar + '" data-title="Bukti Pembayaran"><img style="width:100px;height:auto" src="'+basepath + 'assets/img/bayar/' + token + '.' + data.sudah_bayar +'"></a>' : '<a href="'+basepath+'bayar/'+token+'">Belum Bayar</a>') +'</td>';
+                row += '<td>'+ (data.sudah_refund != false ? '<a data-lightbox="Image-'+ token +'" href="' + basepath + 'assets/img/refund/' + data.id + '.' +  data.sudah_refund + '" data-title="Bukti Refund"><img style="width:100px;height:auto" src="'+basepath + 'assets/img/refund/' + data.id + '.' + data.sudah_refund +'"></a>' : (data.pembatal == 'penjual') ? 'Tidak Di Refund' : '') +'</td>';
                 row += '<td>' + data.nama + '</td>';
                 row += '<td>' + data.nama_lengkap + '</td>';
-                row += '<td>' + data.username + '</td>';
                 row += '<td>' + data.hp + '</td>';
                 row += '<td>' + data.alamat_penjual + '</td>';
                 row += '<td>' + data.pembeli + '</td>';

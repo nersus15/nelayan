@@ -11,7 +11,7 @@ class App extends BaseConfig
      * Config Rekening Transfer
     */
 
-    private array $rekening = [
+    public array $rekening = [
         ['name' => 'SiNelayan', 'type' => 'BRI', 'number' => '2342342534556']
     ];
 

@@ -27,9 +27,11 @@ if (!empty($user)) {
     <meta name="author" content="" />
     <title>Keranjang - SI Nelayan</title>
     <link href="<?= assets_url('vendor/sbadmin/css/styles.css') ?>" rel="stylesheet" />
+    <link href="<?= assets_url('vendor/lightbox/lightbox.css') ?>" rel="stylesheet" />
     <link rel="stylesheet" href="<?= assets_url('css/main.css') ?>">
     <script src="<?= assets_url('js/utils.js') ?>"></script>
     <script src="<?= assets_url('vendor/jquery/jquery.min.js') ?>"></script>
+    <script src="<?= assets_url('vendor/lightbox/lightbox.js') ?>"></script>
     <script src="<?= assets_url('vendor/bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
     <script>var basepath = "<?= base_url() ?>";</script>
 </head>
@@ -65,9 +67,11 @@ if (!empty($user)) {
                                     <table id="tbl-pesanan" class="table">
                                         <thead>
                                             <tr>
+                                                <th>Bukti Bayar</th>
+                                                <th>Bukt Refund</th>
                                                 <th>Barang</th>
                                                 <th>Pemilik</th>
-                                                <th>Username</th>
+                                                <!-- <th>Username</th> -->
                                                 <th>No.Hp</th>
                                                 <th>Alamat Penjual</th>
                                                 <th>Nama Pembeli</th>

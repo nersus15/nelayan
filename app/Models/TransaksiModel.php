@@ -54,4 +54,13 @@ class TransaksiModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    function totalByToken ($token){
+        $total = $this->where('token', $token)
+            ->join('hasil_tangkapan', 'hasil_tangkapan.id = transaksi.barang')
+            ->select('SUM(harga * jumlah) total')
+            ->findAll();
+
+        return empty($total[0]['total']) ? 0 : $total[0]['total'];
+    }
 }

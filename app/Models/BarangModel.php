@@ -15,7 +15,7 @@ class BarangModel extends Model
     protected $protectFields    = true;
     protected $allowedFields    = [
         'id',
-        'dibuat',
+        'tgl_daftar',
         'diupdate',
         'nama',
         'stok',
@@ -53,7 +53,7 @@ class BarangModel extends Model
     function getWithTerjual($pemilik = null, $id = null){
         $m = $this->join('nelayan', 'nelayan.id = hasil_tangkapan.nelayan')
             ->join('transaksi', 'transaksi.barang = hasil_tangkapan.id AND transaksi.status IN("siap", "selesai") ', 'left')
-            ->select('hasil_tangkapan.*,nelayan.hp, nelayan.alamat, nelayan.detail_alamat, nelayan.nama_lengkap, nelayan.dibuat bergabung, transaksi.barang, transaksi.jumlah');
+            ->select('hasil_tangkapan.*,nelayan.hp, nelayan.alamat, nelayan.detail_alamat, nelayan.nama_lengkap, nelayan.tgl_daftar bergabung, transaksi.barang, transaksi.jumlah');
       
         $db = \Config\Database::connect();
         $wilayah = $db->table('wilayah')->get()->getResult();

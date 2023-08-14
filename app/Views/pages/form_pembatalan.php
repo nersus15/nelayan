@@ -27,6 +27,36 @@
                             <textarea name="alasan" id="alasan" class="form-control" maxlength="46" cols="30" rows="5"></textarea>
                         </div>
                     </div>
+                    <?php if ($pembatal == 'penjual') : ?>
+                        <div id="image-wrapper">
+                            <p>Jika pembeli sudah melakukan pembayaran, silahkan upload bukti refund di form berikut:</p>
+                            <script>
+                                Dropzone.options.refund = {
+                                    maxFilesize: 4000,
+                                    paramName: 'photo',
+                                    acceptedFiles: 'image/*',
+                                    // previewsContainer: '.dz-preview',
+                                    headers: {
+                                        'jenis-gambar': 'bukti_refund',
+                                        'force-name': '',
+                                    },
+                                    success: function(file, res) {
+                                        $(file.previewElement).find('.dz-success-mark').css('opacity', 1);
+                                        $("#photo").val(res.new);
+                                        $('.dropzone').unbind('click');
+                                        $('.dropzone').unbind('drag');
+                                    },
+                                    error: function(file, res) {
+                                        $(file.previewElement).find('.dz-error-message').css('opacity', 1).text(res.message).show();
+                                        $(file.previewElement).find('.dz-error-mark').css('opacity', 1);
+                                    }
+                                }
+                            </script>
+                            <div class="dropzone" id="refund" action="<?= base_url('upload/gambar') ?>">
+
+                            </div>
+                        </div>
+                    <?php endif ?>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>

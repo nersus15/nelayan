@@ -15,6 +15,19 @@ namespace Config;
  */
 class Paths
 {
+    /** 
+     * Upload Path
+     */
+
+     public array $upload = [
+        'gambar' => [
+            'general' => 'writable/uploads',
+            'barang' => 'img/barang',
+            'bukti_bayar' => 'img/bayar',
+            'bukti_refund' => 'img/refund'
+        ]
+    ];
+
     /**
      * ---------------------------------------------------------------
      * SYSTEM FOLDER NAME

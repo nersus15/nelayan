@@ -186,6 +186,29 @@ class User extends BaseController
         ];
         return view('pages/keranjang', $data);
     }
+    function bayar($token = null){
+        $pesan = '';
+
+        $model = new \App\Models\TransaksiModel();
+        $total = $model->totalByToken($token);
+
+        if(empty($token) || $total == 0){
+            $pesan = 'Token ' . (empty($token) ? 'Harus diisi ' : ' Invalid/Tidak ditemukan');
+        }
+        $sudahBayar = file_exists(get_path(ASSETS_PATH . 'img/bayar/' . $token . '.png')) || file_exists(get_path(ASSETS_PATH . 'img/bayar/' . $token . '.jpg')) || file_exists(get_path(ASSETS_PATH . 'img/bayar/' . $token . '.jpeg'));
+        if($sudahBayar)
+            $pesan = 'Pesanan sudah dibayar';
+
+        $data = [
+            'token' => $token,
+            'pesan' => $pesan,
+            'rekening' => config('App')?->rekening ?? [],
+            'total' => $total,
+            'sudahBayar' => $sudahBayar
+        ];
+
+        return view('pages/bayar', $data);
+    }
 
     function pesan()
     {
@@ -219,7 +242,7 @@ class User extends BaseController
         } catch (\Throwable $th) {
             return redirect()->to(base_url('keranjang'))->with('response', $th->getMessage());
         }
-        return redirect()->to(base_url('keranjang'))->with('response', "Berhasil melakukan pemesanan")->with('token', $token);
+        return redirect()->to(base_url('keranjang'))->with('response', "Berhasil melakukan pemesanan")->with('token', $token)->with('jenis', $post['jenis']);
         return $this->response->setJSON($this->request->getPost());
     }
     function penjualan()
@@ -406,7 +429,8 @@ class User extends BaseController
                 'transaksi.status',
                 'transaksi.pembeli',
                 'transaksi.alamat_pembeli',
-                'transaksi.detail_alamat_pembeli'
+                'transaksi.detail_alamat_pembeli',
+                'transaksi.pembatal'
             ];
 
             $data = $transaksiModel->select(join(', ', $selects))
@@ -451,10 +475,15 @@ class User extends BaseController
                     $textAlamtPembeli .= ' Desa ' . $wilayah['desa'][$d['alamat_pembeli']] . ', ' . $wilayah['kecamatan'][substr($d['alamat_pembeli'], 0, 8) . '.0000'];
                 }
 
+                $data[$k]['sudah_bayar'] = assetsExistByName(ASSETS_PATH . 'img/bayar/' . $token, ['png', 'jpg', 'jpeg'], true);
+                $data[$k]['sudah_refund'] =assetsExistByName(ASSETS_PATH . 'img/refund/' . $d['id'], ['png', 'jpg', 'jpeg'], true);
+
+
                 $data[$k]['alamat_penjual'] = $textAlamtPenjual;
                 $data[$k]['alamat_pembeli'] = $textAlamtPembeli;
-                return $this->response->setJSON($data);
             }
+            return $this->response->setJSON($data);
+
         } catch (\Throwable $th) {
             return $this->response->setStatusCode(500)->setJSON(['message' => $th->getMessage()]);
         }

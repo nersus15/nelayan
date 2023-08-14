@@ -39,3 +39,6 @@ $routes->get('nelayan', 'Nelayan::index', ['filter' => 'HarusLogin']);
 $routes->post('nelayan/data/(:any)', 'Nelayan::find/$1', ['filter' => 'HarusLogin']);
 $routes->post('nelayan/save', 'Nelayan::save', ['filter' => 'HarusLogin']);
 $routes->get('nelayan/hapus/(:any)', 'Nelayan::hapus/$1', ['filter' => 'HarusLogin']);
+
+$routes->get('bayar/(:any)', 'User::bayar/$1');
+$routes->get('bayar', 'User::bayar');
