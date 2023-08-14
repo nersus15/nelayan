@@ -158,7 +158,7 @@ class Barang extends BaseController
             'activeMenu' => 'barang',
             'dataHeader' => [
                 'title' => 'Daftar Barang Masuk',
-                'extra_js' => [
+             'extra_js' => [
                     "vendor/datatables/jquery.dataTables.min.js",
                     "vendor/datatables-bs4/js/dataTables.bootstrap4.min.js",
                     "vendor/datatables-responsive/js/dataTables.responsive.min.js",

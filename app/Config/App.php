@@ -8,6 +8,14 @@ use CodeIgniter\Session\Handlers\FileHandler;
 class App extends BaseConfig
 {
     /**
+     * Config Rekening Transfer
+    */
+
+    private array $rekening = [
+        ['name' => 'SiNelayan', 'type' => 'BRI', 'number' => '2342342534556']
+    ];
+
+    /**
      * --------------------------------------------------------------------------
      * Base Site URL
      * --------------------------------------------------------------------------
