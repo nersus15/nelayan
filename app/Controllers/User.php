@@ -233,7 +233,7 @@ class User extends BaseController
                 'status' => 'proses',
                 'token' => $token,
                 'jenis' => $post['jenis'],
-                'ongkir' => $post['jenis'] == 'cod' ? 5000 : 0
+                'ongkir' => $post['jenis'] == 'cod' ? null : 0
             ];
         }
         try {
@@ -430,7 +430,8 @@ class User extends BaseController
                 'transaksi.pembeli',
                 'transaksi.alamat_pembeli',
                 'transaksi.detail_alamat_pembeli',
-                'transaksi.pembatal'
+                'transaksi.pembatal',
+                'transaksi.jenis'
             ];
 
             $data = $transaksiModel->select(join(', ', $selects))

@@ -87,7 +87,7 @@ if (!empty($user)) {
                                             <select name="jenis" id="jenis" required class="form-control">
                                                 <option value="">Pilih</option>
                                                 <option value="ambil_sendiri">Ambil Sendiri</option>
-                                                <option value="cod">COD - Ongkir RP.5000,00</option>
+                                                <option value="cod">COD - Ongkir akan dihitung oleh admin</option>
                                             </select>
                                             <label for="jenis">Metode Pengambilan <span class="symbol-required"></span></label>
                                         </div>
@@ -110,13 +110,13 @@ if (!empty($user)) {
                                             </table>
                                         </div>
                                         <p class="text-danger"><?= $message ?></p>
-                                        <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
-                                            <a class="small" href="<?= base_url() ?>">Kembali</a>
-                                            <button class="btn btn-primary" type="submit">Pesan</button>
-                                        </div>
+                                        
                                     </form>
                                 </div>
-
+                                <div class="d-flex align-items-center justify-content-between mt-4 mb-0 mx-4">
+                                    <a class="small" href="<?= base_url() ?>">Kembali</a>
+                                    <button class="btn btn-primary" type="submit">Pesan</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -168,7 +168,7 @@ if (!empty($user)) {
             $("#jenis").change(function(){
                 if(!$(this).val()) return;
                 if($(this).val() == 'cod')
-                    $("#total-bayar").text("Total: Rp." + (parseInt(total) + 5000).toString().rupiahFormat());
+                    $("#total-bayar").text("Total: Rp." + (parseInt(total)).toString().rupiahFormat() + "(Belum Termasuk Ongkir)");
                 else
                     $("#total-bayar").text("Total: Rp." + parseInt(total).toString().rupiahFormat());
 

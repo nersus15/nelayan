@@ -69,10 +69,10 @@ class Barang extends BaseController
                             },
                             'Bukti Bayar' => function($rec, $k, $i){
                                 $sudahBayar = assetsExistByName(ASSETS_PATH . 'img/bayar/' . $rec['token'], ['png', 'jpg', 'jpeg'], true);
-                                if(!$sudahBayar){
+                                if(!$sudahBayar && $rec['jenis'] != 'cod'){
                                     return 'Belum Bayar';
                                 }
-                                return '<a  href="'. assets_url('img/bayar/' . $rec['token'])  . '.' . $sudahBayar.'" data-lightbox="image-'.$rec['token'] . '-' .  $i .'" data-title="Bukti Pembayaran"> <img style="width:100px;height:auto" src="' . assets_url('img/bayar/' . $rec['token'])  . '.' . $sudahBayar. '"></a>';
+                                return $rec['jenis'] == 'cod' ? '-' : '<a  href="'. assets_url('img/bayar/' . $rec['token'])  . '.' . $sudahBayar.'" data-lightbox="image-'.$rec['token'] . '-' .  $i .'" data-title="Bukti Pembayaran"> <img style="width:100px;height:auto" src="' . assets_url('img/bayar/' . $rec['token'])  . '.' . $sudahBayar. '"></a>';
                             },
                             'Bukti Refund' => function($rec, $k, $i){
                                 $sudahRefund = assetsExistByName(ASSETS_PATH . 'img/refund/' . $rec['id'], ['png', 'jpg', 'jpeg'], true);
@@ -88,7 +88,7 @@ class Barang extends BaseController
                                 return rupiah_format($rec['harga']);
                             },
                             'Cara Pengambilan' => function($rec){
-                                return $rec['jenis'] == 'cod' ? 'COD - Ongkir Rp.5000,00' : 'Ambil Sendiri';
+                                return $rec['jenis'] == 'cod' ? ('COD - Ongkir ' . ($rec['ongkir'] == null ? 'Belum ditentukan' : rupiah_format($rec['ongkir']))) : 'Ambil Sendiri';
                             },
                             'Jumlah' => 'jumlah',
                             'Nama Pembeli' => 'pembeli',
@@ -122,7 +122,7 @@ class Barang extends BaseController
                             },
                             'Actions' => function ($rec) {
                                 $sudahBayar = assetsExistByName(ASSETS_PATH . 'img/bayar/' . $rec['token'], ['png', 'jpg', 'jpeg']);
-                                $btnTerima = $sudahBayar ? '<a href="' . base_url('terima/' . $rec['id']) . '" data-id="' . $rec['id'] . '" class="btn btn-info col-sm-8">Terima</a>' : '';
+                                $btnTerima = ($sudahBayar || $rec['jenis'] == 'cod') ? '<a href="' . base_url('terima/' . $rec['id']) . '" data-id="' . $rec['id'] . '" class="btn btn-info col-sm-8">Terima</a>' : '';
                                 $btnCancel = '<a href="' . base_url('tolak') . '" data-id="' . $rec['id'] . '" class="btn batalkan-pesanan btn-warning col-sm-8">Tolak</a>';
                                 $btnInfo = '<button data-id="' . $rec['id'] . '" class="info-pesanan btn-sm btn btn-info">Info Pembatalan</button>';
 

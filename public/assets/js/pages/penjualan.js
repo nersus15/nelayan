@@ -80,7 +80,7 @@ $(document).ready(function () {
                 else if (data.status == 'batal')
                     bg = 'bg-danger'
 
-                row += '<td>'+ (data.sudah_bayar != false ? '<a data-lightbox="Image-'+ token +'" href="' + basepath + 'assets/img/bayar/' + token + '.' +  data.sudah_bayar + '" data-title="Bukti Pembayaran"><img style="width:100px;height:auto" src="'+basepath + 'assets/img/bayar/' + token + '.' + data.sudah_bayar +'"></a>' : '<a href="'+basepath+'bayar/'+token+'">Belum Bayar</a>') +'</td>';
+                row += '<td>'+ (data.sudah_bayar != false ? '<a data-lightbox="Image-'+ token +'" href="' + basepath + 'assets/img/bayar/' + token + '.' +  data.sudah_bayar + '" data-title="Bukti Pembayaran"><img style="width:100px;height:auto" src="'+basepath + 'assets/img/bayar/' + token + '.' + data.sudah_bayar +'"></a>' : (data.jenis == 'ambil_sendiri' ? '<a href="'+basepath+'bayar/'+token+'">Belum Bayar</a>' : '-')) +'</td>';
                 row += '<td>'+ (data.sudah_refund != false ? '<a data-lightbox="Image-'+ token +'" href="' + basepath + 'assets/img/refund/' + data.id + '.' +  data.sudah_refund + '" data-title="Bukti Refund"><img style="width:100px;height:auto" src="'+basepath + 'assets/img/refund/' + data.id + '.' + data.sudah_refund +'"></a>' : (data.pembatal == 'penjual') ? 'Tidak Di Refund' : '') +'</td>';
                 row += '<td>' + data.nama + '</td>';
                 row += '<td>' + data.nama_lengkap + '</td>';
