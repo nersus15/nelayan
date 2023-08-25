@@ -2,6 +2,7 @@
 $session = session();
 $message = $session->getFlashdata('response');
 $token = $session->getFlashdata('token');
+$jenis = $session->getFlashdata('jenis');
 $data = $session->getFlashdata('loginData');
 if (empty($data))
     $data = ['nama' => null, 'alamat' => null, 'hp' => null, 'kecamatan' => null, 'desa' => null, 'detailAlamat' => null];
@@ -43,9 +44,11 @@ if (!empty($user)) {
                             <div class="card shadow-lg border-0 rounded-lg mt-5">
                                 <div class="card-header">
                                     <h3 class="text-center font-weight-light my-4">Keranjang</h3>
-                                    <p id="token"></p>
+                                    <div class="col-sm-12" id="token-wrapper">
+
+                                    </div>
                                 </div>
-                                <div style="overflow-x: scroll;" class="card-body">
+                                <div style="overflow-x: scroll;" class="card-body" id="form-wrapper">
                                     <form action="<?= base_url('pesan') ?>" method="post">
                                         <div class="form-floating mb-3">
                                             <input required value="<?= $data['nama'] ?>" class="form-control" name="nama" id="inputEmail" type="text" />
@@ -125,15 +128,26 @@ if (!empty($user)) {
     <script src="<?= assets_url('vendor/sbadmin/js/scripts.js') ?>"></script>
     <script>
         $(document).ready(function() {
+            var rekening = <?= json_encode(config('App')?->rekening ?? '[]') ?>;
+            var path = '<?= base_url() ?>';
             var dataDesa = <?= json_encode($desa) ?>;
             var desaTerpilih = "<?= $data['desa'] ?>";
+            var rekening = <?= json_encode(config('App')?->rekening ?? '[]') ?>;
             var token = "<?= $token ?>";
+            var jenis = "<?= $jenis ?>";
             if (token) {
+                $("#form-wrapper").hide();
+                $("#token-wrapper").append('<p class="">Jangan Tutup / Pindah dari Halaman Ini  Sebelum Copy Token Dibawah')
                 // Hapus data pesanan karena sudah checkout, tampilkan Token pesanan
-                $("#token").html('Token: ' + token + '<span>(Copy dan simpan token untuk melacak pesanan)</span>');
-                localStorage.removeItem('belanjaan_nelayan');
+                $("#token-wrapper").append('<p>Token: ' + token + ' <span>(Copy dan simpan token untuk melacak pesanan)</span></p>');
 
+                if(jenis == 'ambil_sendiri')
+                    $('#token-wrapper').append('<p>Lakukan pembayaran <a href="'+path+'bayar/'+token+'">disini</a></p>');
+
+                localStorage.removeItem('belanjaan_nelayan');
             }
+
+
             $("#kecamatan").change(function() {
                 var value = $(this).val();
                 if (!value) return;

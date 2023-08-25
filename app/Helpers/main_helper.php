@@ -2,6 +2,8 @@
 
 use Config\Database;
 
+use function PHPUnit\Framework\returnSelf;
+
 if (!function_exists('getMimeType')) {
     function getMimeType($ext)
     {
@@ -765,6 +767,18 @@ if(!function_exists('c_isset')){
     function c_isset($arr, $key){
         $keys = array_keys(is_object($arr) ? (array) $arr : $arr);
         return in_array($key, $keys);
+    }
+}
+
+if(!function_exists('assetsExistByName')){
+    function assetsExistByName($filename, $extOption = [], $returnExt = false){
+        $filename = get_path($filename);
+        foreach($extOption as $ext){
+            if(file_exists($filename . '.' . $ext)){
+                return $returnExt ? $ext : true;
+            }
+        }
+        return false;
     }
 }
 

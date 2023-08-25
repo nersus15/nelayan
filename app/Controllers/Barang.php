@@ -32,6 +32,7 @@ class Barang extends BaseController
             'dataHeader' => [
                 'title' => 'Barang Keluar',
                 'extra_js' => [
+                    'vendor/dropzone/dropzone.js',
                     "vendor/datatables/jquery.dataTables.min.js",
                     "vendor/datatables-bs4/js/dataTables.bootstrap4.min.js",
                     "vendor/datatables-responsive/js/dataTables.responsive.min.js",
@@ -44,7 +45,13 @@ class Barang extends BaseController
                     "vendor/datatables-buttons/js/buttons.html5.min.js",
                     "vendor/datatables-buttons/js/buttons.print.min.js",
                     "vendor/datatables-buttons/js/buttons.colVis.min.js",
+                    "vendor/lightbox/lightbox.js",
                 ],
+                'extra_css' => [
+                    "vendor/lightbox/lightbox.css",
+                    'vendor/dropzone/basic.css',
+                    'vendor/dropzone/dropzone.css'
+                ]
             ],
             'dataFooter' => [
                 'extra_js' => [
@@ -59,6 +66,20 @@ class Barang extends BaseController
                         'header' => [
                             'No' => function ($rec, $k, $i) {
                                 return $i;
+                            },
+                            'Bukti Bayar' => function($rec, $k, $i){
+                                $sudahBayar = assetsExistByName(ASSETS_PATH . 'img/bayar/' . $rec['token'], ['png', 'jpg', 'jpeg'], true);
+                                if(!$sudahBayar){
+                                    return 'Belum Bayar';
+                                }
+                                return '<a  href="'. assets_url('img/bayar/' . $rec['token'])  . '.' . $sudahBayar.'" data-lightbox="image-'.$rec['token'] . '-' .  $i .'" data-title="Bukti Pembayaran"> <img style="width:100px;height:auto" src="' . assets_url('img/bayar/' . $rec['token'])  . '.' . $sudahBayar. '"></a>';
+                            },
+                            'Bukti Refund' => function($rec, $k, $i){
+                                $sudahRefund = assetsExistByName(ASSETS_PATH . 'img/refund/' . $rec['id'], ['png', 'jpg', 'jpeg'], true);
+                                if(!$sudahRefund){
+                                    return $rec['status'] == 'batal' ? 'Tidak Di Refund' : '';
+                                }
+                                return '<a  href="'. assets_url('img/refund/' . $rec['id'])  . '.' . $sudahRefund.'" data-lightbox="image-'.$rec['id'] . '-' .'" data-title="Bukti Refund"> <img style="width:100px;height:auto" src="' . assets_url('img/refund/' . $rec['id'])  . '.' . $sudahRefund. '"></a>';
                             },
                             'Barang' => function ($rec) {
                                 return '<a href="' . base_url('barang/info/' . $rec['barang']) . '">' . $rec['nama'] . '</a>';
@@ -100,7 +121,8 @@ class Barang extends BaseController
                                 return $status;
                             },
                             'Actions' => function ($rec) {
-                                $btnTerima = '<a href="' . base_url('terima/' . $rec['id']) . '" data-id="' . $rec['id'] . '" class="btn btn-info col-sm-8">Terima</a>';
+                                $sudahBayar = assetsExistByName(ASSETS_PATH . 'img/bayar/' . $rec['token'], ['png', 'jpg', 'jpeg']);
+                                $btnTerima = $sudahBayar ? '<a href="' . base_url('terima/' . $rec['id']) . '" data-id="' . $rec['id'] . '" class="btn btn-info col-sm-8">Terima</a>' : '';
                                 $btnCancel = '<a href="' . base_url('tolak') . '" data-id="' . $rec['id'] . '" class="btn batalkan-pesanan btn-warning col-sm-8">Tolak</a>';
                                 $btnInfo = '<button data-id="' . $rec['id'] . '" class="info-pesanan btn-sm btn btn-info">Info Pembatalan</button>';
 
@@ -115,7 +137,9 @@ class Barang extends BaseController
                     'data' => [
                         'pembatal' => 'penjual'
                     ]
-                ]
+                ],
+                
+
             ]
         ];
 
