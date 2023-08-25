@@ -5,13 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SI Nelayan</title>
-
-    <link rel="stylesheet" href="<?= assets_url('vendor/bootstrap/css/bootstrap.min.css') ?>">
-    <link rel="stylesheet" href="<?= assets_url('css/custom.card.css') ?>">
-    <script src="<?= assets_url('vendor/bootstrap/js/jquery.min.js') ?>"></script>
-    <script src="<?= assets_url('vendor/bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
-    <link rel="stylesheet" href="<?= assets_url('vendor/fontawesome/css/all.css') ?>">
-    <script src="<?= assets_url('js/utils.js') ?>"></script>
     <style>
         body{
             background-color: #eee;
@@ -24,7 +17,7 @@
         }
 
         .carousel-item-1 {
-            background: linear-gradient(rgb(72, 0, 72, 0.8), rgb(192, 72, 72, 0.8)), url(<?= assets_url('img/banner/img-1.jpg') ?>);
+            background: linear-gradient(rgb(72, 0, 72, 0.8), rgb(192, 72, 72, 0.8)), url(<?= assets_url('img/banner/img-1.jpg') ?>); /** img/banner/img-1.jpg = gambar background carousel (bergulir) */
             background-size: cover;
 
         }
@@ -44,9 +37,14 @@
             margin: 0;
             color: white;
         }
-
-        
     </style>
+
+    <link rel="stylesheet" href="<?= assets_url('vendor/bootstrap/css/bootstrap.min.css') ?>">
+    <link rel="stylesheet" href="<?= assets_url('css/custom.card.css') ?>">
+    <script src="<?= assets_url('vendor/bootstrap/js/jquery.min.js') ?>"></script>
+    <script src="<?= assets_url('vendor/bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
+    <link rel="stylesheet" href="<?= assets_url('vendor/fontawesome/css/all.css') ?>">
+    <script src="<?= assets_url('js/utils.js') ?>"></script>
 </head>
 
 <body>
@@ -61,7 +59,7 @@
                     <a class="nav-link" href="<?= base_url() ?>">Home <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a id="nav-item-keranjang" class="nav-link" href="<?= base_url('keranjang') ?>">Keranjang </a>
+                    <a class="nav-link" href="<?= base_url('keranjang') ?>">Keranjang <!-- Jangan lupa ganti --> <span id="nav-item-keranjang" class="badge badge-danger">0</span></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="<?= base_url('tracking') ?>">Lacak Pesanan</a>

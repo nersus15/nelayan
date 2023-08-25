@@ -77,7 +77,7 @@ class Barang extends BaseController
                                 $kecamatan = '';
                                 $alamat = $rec['alamat_pembeli'];
                                 if (level_wilayah($alamat) == 3)
-                                    $kecamatan == 'Kecamatan ' . $wilayah['kecamtan'][$alamat];
+                                    $kecamatan == 'Kecamatan ' . $wilayah['kecamatan'][$alamat];
                                 else {
                                     $desa = 'Desa ' . $wilayah['desa'][$alamat] . ', ';
                                     $kecamatan = $wilayah['kecamatan'][substr($alamat, 0, 8) . '.0000'];
@@ -183,7 +183,7 @@ class Barang extends BaseController
                     'view' => 'components/datatables',
                     'data' => [
                         'data' => $dataBarang,
-                        'desc' => !empty($response) ? $response : 'Data Barang Masuk <a href="' . base_url('barang/tambah') . '" class="btn btn-primary">Tambah<a/>',
+                        'desc' => !empty($response) ? $response : 'Data Barang Masuk <a href="' . base_url('barang/tambah') . '" class="btn btn-primary">Ubah<a/>',
                         'header' => [
                             'No' => function ($rec, $index, $row) {
                                 return $row;
@@ -210,7 +210,7 @@ class Barang extends BaseController
                                 $alamat = $rec->alamat;
                                 if (!empty($text_alamat)) $text_alamat .= ', ';
                                 if (!empty($alamat) && level_wilayah($alamat) == 3)
-                                    $text_alamat .= ' Kecmatan ' . $wilayah['kecamatan'][$alamat];
+                                    $text_alamat .= ' Kecamatan ' . $wilayah['kecamatan'][$alamat];
                                 elseif (!empty($alamat) && level_wilayah($alamat) ==  4)
                                     $text_alamat .= ' Desa ' . $wilayah['desa'][$alamat] . ', Kec. ' . $wilayah['kecamatan'][substr($alamat, 0, 8) . '.0000'];
 

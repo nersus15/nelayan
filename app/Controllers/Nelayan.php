@@ -55,7 +55,7 @@ class Nelayan extends BaseController
                                 $alamat = $rec['alamat'];
                                 if (!empty($text_alamat)) $text_alamat .= ', ';
                                 if (!empty($alamat) && level_wilayah($alamat) == 3)
-                                    $text_alamat .= ' Kecmatan ' . $wilayah['kecamatan'][$alamat];
+                                    $text_alamat .= ' Kecamatan ' . $wilayah['kecamatan'][$alamat];
                                 elseif (!empty($alamat) && level_wilayah($alamat) ==  4)
                                     $text_alamat .= ' Desa ' . $wilayah['desa'][$alamat] . ', Kec. ' . $wilayah['kecamatan'][substr($alamat, 0, 8) . '.0000'];
 

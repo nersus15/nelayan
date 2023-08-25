@@ -21,7 +21,7 @@ $(document).ready(function () {
         });
          // Hitung Barang Belanjaan
          var barangBelanja = data.filter(arr => arr.jumlah > 0);
-         $("#nav-item-keranjang").html('Kernajang<span class="badge badge-danger">'+ barangBelanja.length +'</span>');
+         $("#nav-item-keranjang").text(barangBelanja.length);
     }
     function belanjaanHandler(id, operasi = 'tambah') {
         var data = localStorage.getItem('belanjaan_nelayan');
@@ -92,7 +92,7 @@ $(document).ready(function () {
 
         // Hitung Barang Belanjaan
         var barangBelanja = data.filter(arr => arr.jumlah > 0);
-        $("#nav-item-keranjang").html('Keranjang<span class="badge badge-danger">'+ barangBelanja.length +'</span>');
+        $("#nav-item-keranjang").text(barangBelanja.length);
     }
 
     loadBelanjaan();

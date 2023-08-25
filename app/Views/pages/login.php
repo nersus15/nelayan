@@ -19,19 +19,27 @@
     <link rel="stylesheet" href="<?= assets_url('css/main.css') ?>">
     <script src="<?= assets_url('vendor/bootstrap/js/jquery.min.js') ?>"></script>
     <script src="<?= assets_url('vendor/bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
-</head>
+    <style>
+      .main-bg{
+        background: url('<?= assets_url("img/banner/img-2.jpg")?>'); 
+        background-repeat: no-repeat;
+        background-size: cover;
+    </style>
 
-<body class="bg-primary">
+<body class=" main-bg"> <!-- Ganti background disini, bisa menggunakan class (bootstrap), atau style (manual) -->
+
+    
     <div id="layoutAuthentication">
         <div id="layoutAuthentication_content">
             <main>
                 <div class="container">
                     <div class="row justify-content-center">
                         <div class="col-lg-5">
-                            <div class="card shadow-lg border-0 rounded-lg mt-5">
+                            <div  class="card shadow-lg border-0 rounded-lg mt-5">
                                 <div class="card-header">
                                     <h3 class="text-center font-weight-light my-4">Login</h3>
                                 </div>
+                               
                                 <div class="card-body">
                                     <form action="<?= base_url('login') ?>" method="post">
                                         <div class="form-floating mb-3">
@@ -48,7 +56,10 @@
                                            <button class="btn btn-primary" type="submit">Login</button>
                                         </div>
                                     </form>
+                                    <div class="login100-more" > 
+                                    </div>
                                 </div>
+                               
                                 <div class="card-footer text-center py-3">
                                     <!-- <div class="small">Belum punya akun ?<a href="<?php // echo base_url('register') ?>">Klik disini</a> untuk mendaftar</div> -->
                                 </div>
@@ -63,5 +74,7 @@
     <script src="<?= assets_url('vendor/sbadmin/js/scripts.js') ?>"></script>
 
 </body>
+    
+
 
 </html>
