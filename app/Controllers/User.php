@@ -233,7 +233,7 @@ class User extends BaseController
                 'status' => 'proses',
                 'token' => $token,
                 'jenis' => $post['jenis'],
-                'ongkir' => $post['jenis'] == 'cod' ? null : 0
+                'ongkir' => $post['jenis'] == 'cod' ? 0 : 0
             ];
         }
         try {
@@ -360,7 +360,9 @@ class User extends BaseController
     function terima($id)
     {
         $transaksiModel = new \App\Models\TransaksiModel();
-
+        $arr = explode('_', $id);
+        $id = $arr[0];
+        $ongkir = $arr[1] ?? 0;
         $transaksi = $transaksiModel->find($id);
         if (empty($transaksi)) {
             return redirect()->to(base_url('barang/keluar'))->with('response', 'Tidak ada transaksi yang ditemukan');
@@ -368,7 +370,8 @@ class User extends BaseController
 
         $data = [
             'diupdate' => waktu(),
-            'status' => 'siap'
+            'status' => 'siap',
+            'ongkir' => $ongkir
         ];
         $transaksiModel->update($id, $data);
         return redirect()->to(base_url('barang/keluar'))->with('response', 'Anda telah menerima pesanan, segera persiapkan pesanan');
@@ -405,7 +408,7 @@ class User extends BaseController
             'status' => 'selesai',
         ];
         $transaksiModel->update($id, $data);
-        return redirect()->to(base_url('tracking') )->with('response', 'Anda telah membatalkan pesanan');
+        return redirect()->to(base_url('tracking') )->with('response', 'Anda telah menyelesaikan pesanan');
     }
 
 
@@ -431,7 +434,8 @@ class User extends BaseController
                 'transaksi.alamat_pembeli',
                 'transaksi.detail_alamat_pembeli',
                 'transaksi.pembatal',
-                'transaksi.jenis'
+                'transaksi.jenis',
+                'transaksi.ongkir'
             ];
 
             $data = $transaksiModel->select(join(', ', $selects))

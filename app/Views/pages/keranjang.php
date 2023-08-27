@@ -110,14 +110,14 @@ if (!empty($user)) {
                                             </table>
                                         </div>
                                         <p class="text-danger"><?= $message ?></p>
-                                        
-                                    </form>
+
                                 </div>
                                 <div class="d-flex align-items-center justify-content-between mt-4 mb-0 mx-4">
                                     <a class="small" href="<?= base_url() ?>">Kembali</a>
                                     <button class="btn btn-primary" type="submit">Pesan</button>
                                 </div>
                             </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -141,8 +141,8 @@ if (!empty($user)) {
                 // Hapus data pesanan karena sudah checkout, tampilkan Token pesanan
                 $("#token-wrapper").append('<p>Token: ' + token + ' <span>(Copy dan simpan token untuk melacak pesanan)</span></p>');
 
-                if(jenis == 'ambil_sendiri')
-                    $('#token-wrapper').append('<p>Lakukan pembayaran <a href="'+path+'bayar/'+token+'">disini</a></p>');
+                if (jenis == 'ambil_sendiri')
+                    $('#token-wrapper').append('<p>Lakukan pembayaran <a href="' + path + 'bayar/' + token + '">disini</a></p>');
 
                 localStorage.removeItem('belanjaan_nelayan');
             }
@@ -165,9 +165,9 @@ if (!empty($user)) {
             });
             var total = 0;
 
-            $("#jenis").change(function(){
-                if(!$(this).val()) return;
-                if($(this).val() == 'cod')
+            $("#jenis").change(function() {
+                if (!$(this).val()) return;
+                if ($(this).val() == 'cod')
                     $("#total-bayar").text("Total: Rp." + (parseInt(total)).toString().rupiahFormat() + "(Belum Termasuk Ongkir)");
                 else
                     $("#total-bayar").text("Total: Rp." + parseInt(total).toString().rupiahFormat());

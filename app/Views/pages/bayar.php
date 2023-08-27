@@ -112,9 +112,11 @@ if (!empty($user)) {
     <script>
         $(document).ready(function() {
             var path = '<?= base_url() ?>';
+            var sudahBayar = <?= $sudahBayar ? 'true' : 'false' ?>;
+            var pesan = "<?= $pesan ?>";
             var token = '<?= $token ?>';
             $("#redirect").click(function() {
-                location.href = path + 'bayar/' + $("#token").val();
+                location.href = path + 'bayar/' + (pesan && !sudahBayar ? $("#token").val() : token);
             });
         });
     </script>

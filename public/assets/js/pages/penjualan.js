@@ -56,6 +56,19 @@ $(document).ready(function () {
         });
     }
 
+    $(".btn-terima").click(function(e){{
+        e.preventDefault();          
+        var Ongkir = null;
+        var jenis = $(this).data('jenis');
+        var href = $(this).attr('href');
+
+        if(jenis == 'cod'){
+            Ongkir = prompt('Masukkan ongkir');
+        }
+        location.href = href + (Ongkir ? '_' +  Ongkir : null);
+        
+    }});
+
     $("#track").click(function (e) {
         e.preventDefault();
         var token = $("#token").val();
@@ -90,6 +103,7 @@ $(document).ready(function () {
                 row += '<td>Rp.' + data.harga.toString().rupiahFormat() + '</td>';
                 row += '<td>' + data.jumlah + '</td>';
                 row += '<td>Rp.' + (parseInt(data.harga) * parseInt(data.jumlah)).toString().rupiahFormat() + '</td>';
+                row += '<td>'+ (data.ongkir > 0 ? "Rp." + data.ongkir.toString().rupiahFormat() : "-") +'</td>';
                 row += '<td><span class="badge '+ bg +'">' + data.status + '</span></td>';
 
                 if (data.status == 'proses') {
